@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux: Comandos Práticos</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+    function copiarComando(idElemento, botao) {
+        // Pega o texto de dentro da tag <code>
+        const texto = document.getElementById(idElemento).innerText;
+
+        // Usa a API do navegador para copiar para a área de transferência
+        navigator.clipboard.writeText(texto).then(() => {
+            // Muda o texto do botão para dar um feedback ao usuário
+            const textoOriginal = botao.innerText;
+            botao.innerText = "Copiado!";
+            botao.classList.add("copiado");
+
+            // Volta ao normal depois de 2 segundos
+            setTimeout(() => {
+                botao.innerText = textoOriginal;
+                botao.classList.remove("copiado");
+            }, 2000);
+        }).catch(err => {
+            console.error('Erro ao copiar o texto: ', err);
+            botao.innerText = "Erro";
+        });
+    }
+</script>
+</head>
+<body>
+
+    <header>
+        <h1 class="titulo">Guia de Comandos Linux</h1>
+    </header>
+
+    <main class="container">
+        <p class="texto">Referência rápida para administração de sistemas e suporte.</p>
+
+        <section class="comando-card">
+            <h3>Listar arquivos</h3>
+                <div class="codigo-container">
+                    <code class="codigo" id="cmd-ls">ls -lha</code>
+                    <button class="btn-copiar" onclick="copiarComando('cmd-ls', this)">Copiar</button>
+                </div>
+            <p>Lista todos os arquivos em formato detalhado, incluindo ocultos.</p>
+        </section>
+
+        <section class="comando-card">
+            <h3>Verificar uso de disco</h3>
+            <code class="codigo">df -h</code>
+            <p>Exibe o espaço livre e ocupado em partições do sistema.</p>
+        </section>
+
+        <button class="btn-terminal">Ver Mais Comandos</button>
+    </main>
+
+</body>
+</html>
