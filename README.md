@@ -27,7 +27,7 @@ Ela foi projetada para ajudar profissionais de TI, estudantes e entusiastas a **
 ## 🖥️ Demonstração online
 
 Acesse a versão mais recente diretamente no GitHub Pages:  
-👉 [**LinuxLib – Demo**](https://gabrielfcoelh83.github.io/Aula-3/)
+👉 [**LinuxLib – Demo**](https://github.com/gabrielfcoelh83/LinuxLib/)
 
 > *(Se o GitHub Pages ainda não estiver ativo, você pode copiar o conteúdo do `index.html` e abrir localmente.)*
 
