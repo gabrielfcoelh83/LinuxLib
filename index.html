@@ -1,766 +1,885 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LinuxLib — Domine o Terminal</title>
-<meta name="description" content="Biblioteca moderna de comandos Linux com exemplos reais e explicações práticas.">
-<meta property="og:title" content="LinuxLib">
-<meta property="og:image" content="https://placehold.co/1200x630">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #080b0d;
-    --bg2: #0e1215;
-    --bg3: #131820;
-    --green: #00e87c;
-    --green-dim: #00c468;
-    --green-glow: rgba(0,232,124,0.15);
-    --green-glow-strong: rgba(0,232,124,0.3);
-    --amber: #ffb347;
-    --red: #ff5c5c;
-    --cyan: #00d4ff;
-    --text: #e2e8f0;
-    --text-dim: #9aabb8;
-    --text-muted: #657487;
-    --border: rgba(0,232,124,0.12);
-    --border-dim: rgba(255,255,255,0.05);
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Syne', sans-serif;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinuxLib — Domine o Terminal</title>
+  <meta name="description" content="Biblioteca moderna de comandos Linux com exemplos reais e explicações práticas.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="LinuxLib — Domine o Terminal">
+  <meta property="og:description" content="Biblioteca moderna de comandos Linux com exemplos reais e explicações práticas.">
+  <meta property="og:image" content="https://placehold.co/1200x630">
+  <meta property="og:type" content="website">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #080b0d;
+      --bg2: #0e1215;
+      --bg3: #131820;
+      --green: #00e87c;
+      --green-dim: #00c468;
+      --green-glow: rgba(0,232,124,0.15);
+      --green-glow-strong: rgba(0,232,124,0.3);
+      --amber: #ffb347;
+      --red: #ff5c5c;
+      --cyan: #00d4ff;
+      --text: #e2e8f0;
+      --text-dim: #9aabb8;
+      --text-muted: #657487;
+      --border: rgba(0,232,124,0.12);
+      --border-dim: rgba(255,255,255,0.05);
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  html {
-    scroll-behavior: smooth;
-  }
+    html {
+      scroll-behavior: smooth;
+    }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-  /* Scanline */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
-    pointer-events: none;
-    z-index: 9999;
-  }
+    /* Scanline */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+      pointer-events: none;
+      z-index: 9999;
+    }
 
-  /* --- NAV --- */
-  nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 100;
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(8,11,13,0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    transition: background 0.3s ease;
-  }
+    /* --- HEADER & NAV --- */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      background: rgba(8,11,13,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s ease;
+    }
 
-  .logo {
-    font-family: var(--mono);
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--green);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-  .logo:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
-  .logo span { color: var(--text-dim); font-weight: 300; }
+    nav {
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
 
-  .nav-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--text-dim);
-  }
-  .nav-links a {
-    color: inherit;
-    text-decoration: none;
-    transition: color 0.2s;
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 0 0.25rem;
-  }
-  .nav-links a:hover, .nav-links a:focus-visible { color: var(--green); outline: 2px solid var(--green); outline-offset: 4px; border-radius: 2px; }
+    .logo {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .logo:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+    .logo span { color: var(--text-dim); font-weight: 300; }
 
-  .nav-cta {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--bg);
-    background: var(--green);
-    border: 2px solid transparent;
-    padding: 0.5rem 1.2rem;
-    cursor: pointer;
-    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-    transition: all 0.2s;
-  }
-  .nav-cta:hover { background: #00ff9d; box-shadow: 0 0 20px var(--green-glow-strong); }
-  .nav-cta:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--green); }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .nav-links a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 0.25rem;
+    }
+    .nav-links a:hover, .nav-links a:focus-visible { color: var(--green); outline: 2px solid var(--green); outline-offset: 4px; border-radius: 2px; }
 
-  .nav-hamburger {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
-    background: none;
-    border: 1px solid var(--border);
-    padding: 0.5rem 0.6rem;
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-  }
-  .nav-hamburger span {
-    display: block;
-    width: 18px;
-    height: 1.5px;
-    background: var(--text);
-    transition: all 0.25s ease;
-  }
-  .nav-hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-  .nav-hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-  .nav-hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .nav-cta {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--bg);
+      background: var(--green);
+      border: 2px solid transparent;
+      padding: 0.5rem 1.2rem;
+      cursor: pointer;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: #00ff9d; box-shadow: 0 0 20px var(--green-glow-strong); }
+    .nav-cta:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--green); }
 
-  .nav-drawer {
-    display: none;
-    position: fixed;
-    top: 57px;
-    left: 0;
-    width: 100%;
-    background: rgba(8,11,13,0.98);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    flex-direction: column;
-    padding: 1.5rem 2rem;
-    z-index: 99;
-  }
-  .nav-drawer.open { display: flex; }
-  .nav-drawer li { list-style: none; border-bottom: 1px solid var(--border-dim); }
-  .nav-drawer a {
-    display: flex;
-    align-items: center;
-    height: 52px;
-    font-family: var(--mono);
-    font-size: 0.9rem;
-    color: var(--text-dim);
-    text-decoration: none;
-  }
-  .nav-drawer a::before { content: '~/'; color: var(--green); margin-right: 0.6rem; }
-  .nav-drawer a:hover, .nav-drawer a:focus-visible { color: var(--green); }
-  .nav-drawer .nav-cta-mobile button {
-    width: 100%;
-    background: var(--green);
-    color: var(--bg);
-    border: none;
-    padding: 0.9rem;
-    font-family: var(--mono);
-    font-weight: bold;
-    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-    margin-top: 1rem;
-    cursor: pointer;
-  }
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: 1px solid var(--border);
+      padding: 0.5rem;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: var(--text);
+      transition: all 0.25s ease;
+    }
+    .nav-hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .nav-hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-  /* --- HERO melhorado --- */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 8rem 2rem 4rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    background: radial-gradient(circle at top, rgba(0,232,124,0.08), transparent 35%), linear-gradient(to bottom, #080b0d, #0b1116);
-  }
+    .nav-drawer {
+      display: none;
+      position: fixed;
+      top: 65px; /* Ajustado para a altura do header */
+      left: 0;
+      width: 100%;
+      background: rgba(8,11,13,0.98);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      padding: 1.5rem 2rem;
+      z-index: 99;
+    }
+    .nav-drawer.open { display: flex; }
+    .nav-drawer ul { list-style: none; }
+    .nav-drawer li { border-bottom: 1px solid var(--border-dim); }
+    .nav-drawer a {
+      display: flex;
+      align-items: center;
+      height: 52px;
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      text-decoration: none;
+    }
+    .nav-drawer a::before { content: '~/'; color: var(--green); margin-right: 0.6rem; }
+    .nav-drawer a:hover, .nav-drawer a:focus-visible { color: var(--green); }
+    .nav-drawer .nav-cta-mobile button {
+      width: 100%;
+      background: var(--green);
+      color: var(--bg);
+      border: none;
+      padding: 0.9rem;
+      font-family: var(--mono);
+      font-weight: bold;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      margin-top: 1rem;
+      cursor: pointer;
+    }
 
-  .hero-glow {
-    position: absolute;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,232,124,0.08) 0%, transparent 70%);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    animation: pulse 4s ease-in-out infinite;
-  }
+    /* --- HERO --- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at top, rgba(0,232,124,0.08), transparent 35%), linear-gradient(to bottom, #080b0d, #0b1116);
+    }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-  }
+    .hero-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,232,124,0.08) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: pulse 4s ease-in-out infinite;
+    }
 
-  .hero h1 {
-    font-family: var(--mono);
-    font-size: clamp(2rem, 5vw, 3.8rem);
-    font-weight: 700;
-    line-height: 1.1;
-    max-width: 820px;
-    margin-bottom: 1.5rem;
-  }
-  .hero h1 .accent { color: var(--green); }
-  .hero h1 .dim { color: var(--text-dim); }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    }
 
-  .hero p {
-    font-size: 1.1rem;
-    color: var(--text-dim);
-    max-width: 560px;
-    margin-bottom: 2rem;
-  }
+    .hero h1 {
+      font-family: var(--mono);
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      max-width: 820px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 .accent { color: var(--green); }
+    .hero h1 .dim { color: var(--text-dim); }
 
-  /* Busca principal */
-  .search-wrap {
-    width: 100%;
-    max-width: 620px;
-    position: relative;
-    margin-bottom: 1rem;
-  }
-  .search-wrap input {
-    width: 100%;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 0.95rem;
-    padding: 1rem 1.4rem 1rem 3.2rem;
-    outline: none;
-    transition: all 0.3s;
-  }
-  .search-wrap input:focus {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px var(--green-glow);
-  }
-  .search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--green);
-    font-family: var(--mono);
-  }
-  .search-hints {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--text-muted);
-  }
-  .hint-tag {
-    background: var(--bg2);
-    border: 1px solid var(--border-dim);
-    padding: 0.2rem 0.6rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .hint-tag:hover { border-color: var(--green); color: var(--green); }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      max-width: 560px;
+      margin-bottom: 2rem;
+    }
 
-  /* Seção de resultados da biblioteca */
-  .library-section {
-    padding: 4rem 2rem;
-    background: var(--bg2);
-    border-top: 1px solid var(--border-dim);
-    border-bottom: 1px solid var(--border-dim);
-  }
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .section-label {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--green);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-  h2 {
-    font-family: var(--mono);
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
-    margin-bottom: 2rem;
-  }
-  .commands-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-  .command-card {
-    background: var(--bg3);
-    border: 1px solid var(--border-dim);
-    padding: 1.2rem;
-    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    cursor: pointer;
-    position: relative;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 10px 30px rgba(0,0,0,0.2);
-  }
-  .command-card:hover {
-    border-color: var(--green);
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px var(--green-glow);
-  }
-  .command-name {
-    font-family: var(--mono);
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--green);
-    margin-bottom: 0.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-  .command-category {
-    font-size: 0.65rem;
-    background: rgba(0,212,255,0.1);
-    padding: 0.2rem 0.5rem;
-    border-radius: 20px;
-    color: var(--cyan);
-  }
-  .command-desc {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    margin-bottom: 0.8rem;
-    line-height: 1.5;
-  }
-  .command-example {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    background: var(--bg);
-    padding: 0.5rem;
-    border-left: 2px solid var(--green);
-    color: var(--text);
-    overflow-x: auto;
-  }
-  .card-footer {
-    margin-top: 0.8rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-  }
-  .copy-btn, .details-btn {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 0.2rem 0.6rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--text-dim);
-  }
-  .copy-btn:hover, .details-btn:hover {
-    border-color: var(--green);
-    color: var(--green);
-  }
-  .toast {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--green);
-    color: var(--bg);
-    font-family: var(--mono);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    z-index: 10000;
-    opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-  }
-  .toast.show { opacity: 1; }
+    /* Busca principal */
+    .search-form {
+      width: 100%;
+      max-width: 620px;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .search-wrap {
+      position: relative;
+    }
+    .search-wrap input {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      padding: 1rem 1.4rem 1rem 3.2rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+    .search-wrap input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px var(--green-glow);
+    }
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--green);
+      font-family: var(--mono);
+      pointer-events: none;
+    }
+    .search-hints {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .hint-tag {
+      background: var(--bg2);
+      border: 1px solid var(--border-dim);
+      padding: 0.2rem 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .hint-tag:hover { border-color: var(--green); color: var(--green); }
 
-  /* Modal de detalhes */
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal.active { display: flex; }
-  .modal-content {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    max-width: 700px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    padding: 2rem;
-    position: relative;
-    box-shadow: 0 0 30px var(--green-glow);
-  }
-  .modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  .modal-close:hover { color: var(--green); }
+    /* Seção de resultados da biblioteca */
+    .library-section {
+      padding: 4rem 2rem;
+      background: var(--bg2);
+      border-top: 1px solid var(--border-dim);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--green);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    h2 {
+      font-family: var(--mono);
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      margin-bottom: 2rem;
+    }
+    .commands-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .command-card {
+      background: var(--bg3);
+      border: 1px solid var(--border-dim);
+      padding: 1.2rem;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+    }
+    .command-card:hover {
+      border-color: var(--green);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px var(--green-glow);
+    }
+    .command-name {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .command-category {
+      font-size: 0.65rem;
+      background: rgba(0,212,255,0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      color: var(--cyan);
+    }
+    .command-desc {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 0.8rem;
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+    .command-example {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      background: var(--bg);
+      padding: 0.5rem;
+      border-left: 2px solid var(--green);
+      color: var(--text);
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+    .card-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+    .copy-btn, .details-btn {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-dim);
+    }
+    .copy-btn:hover, .details-btn:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: var(--bg);
+      font-family: var(--mono);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
 
-  /* Demais seções (benefícios, como funciona, etc) mantidas resumidas */
-  .benefits-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    margin: 3rem 0;
-  }
-  .benefit-card {
-    background: var(--bg2);
-    border: 1px solid var(--border-dim);
-    padding: 1.5rem;
-    transition: all 0.3s;
-  }
-  .footer {
-    background: var(--bg2);
-    border-top: 1px solid var(--border-dim);
-    padding: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    font-family: var(--mono);
-    font-size: 0.7rem;
-  }
-  .footer-links {
-    display: flex;
-    gap: 1.5rem;
-    list-style: none;
-  }
-  .footer-links a {
-    color: var(--text-muted);
-    text-decoration: none;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-  }
-  .footer-links a:hover { color: var(--green); }
+    /* Modal de detalhes */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      max-width: 700px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 0 30px var(--green-glow);
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .modal-close:hover { color: var(--green); }
 
-  @media (max-width: 768px) {
-    nav .nav-links, nav .nav-cta { display: none; }
-    .nav-hamburger { display: flex; }
-    .commands-grid { grid-template-columns: 1fr; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-  }
-</style>
+    /* Benefícios */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0;
+      list-style: none;
+    }
+    .benefit-card {
+      background: var(--bg2);
+      border: 1px solid var(--border-dim);
+      padding: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border-dim);
+      padding: 2rem;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .footer-links a:hover { color: var(--green); }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    @media (max-width: 768px) {
+      nav .nav-links, nav .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .commands-grid { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
 <body>
 
-<nav aria-label="Navegação principal">
-  <a href="#" class="logo">linux<span>/</span>lib<span style="color:var(--green)">_</span></a>
-  <ul class="nav-links">
-    <li><a href="#biblioteca">Comandos</a></li>
-    <li><a href="#como-funciona">Como funciona</a></li>
-    <li><a href="#contribuir">Contribuir</a></li>
-  </ul>
-  <button class="nav-cta" type="button" id="exploreBtn">Explorar →</button>
-  <button class="nav-hamburger" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="drawer">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-<ul class="nav-drawer" id="drawer">
-  <li><a href="#biblioteca" onclick="fecharDrawer()">Comandos</a></li>
-  <li><a href="#como-funciona" onclick="fecharDrawer()">Como funciona</a></li>
-  <li><a href="#contribuir" onclick="fecharDrawer()">Contribuir</a></li>
-  <li class="nav-cta-mobile"><button onclick="fecharDrawer(); document.getElementById('searchInput').focus();">Explorar biblioteca →</button></li>
-</ul>
+  <header>
+    <nav aria-label="Navegação principal">
+      <a href="/" class="logo" aria-label="LinuxLib - Página Inicial">
+        linux<span>/</span>lib<span style="color:var(--green)" aria-hidden="true">_</span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="#biblioteca">Comandos</a></li>
+        <li><a href="#contribuir">Contribuir</a></li>
+      </ul>
+      
+      <button class="nav-cta" type="button" id="exploreBtn">Explorar biblioteca →</button>
+      
+      <button class="nav-hamburger" id="hamburgerBtn" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
 
-<section class="hero">
-  <div class="hero-glow"></div>
-  <h1>Domine o terminal Linux<br>com comandos <span class="accent">prontos</span><br><span class="dim">e explicações claras.</span></h1>
-  <p>Busque, copie, entenda. Milhares de comandos validados por profissionais.</p>
-  <div class="search-wrap">
-    <span class="search-icon">$</span>
-    <input type="text" id="searchInput" placeholder="grep, rsync, systemctl, docker..." autocomplete="off">
+  <div class="nav-drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu móvel">
+    <ul aria-label="Links de navegação móvel">
+      <li><a href="#biblioteca" onclick="fecharDrawer()">Comandos</a></li>
+      <li><a href="#como-funciona" onclick="fecharDrawer()">Como funciona</a></li>
+      <li><a href="#contribuir" onclick="fecharDrawer()">Contribuir</a></li>
+      <li class="nav-cta-mobile">
+        <button type="button" onclick="fecharDrawer(); document.getElementById('searchInput').focus();">
+          Explorar biblioteca →
+        </button>
+      </li>
+    </ul>
   </div>
-  <div class="search-hints">
-    <span class="hint-tag" data-cmd="find">find</span>
-    <span class="hint-tag" data-cmd="tar">tar</span>
-    <span class="hint-tag" data-cmd="chmod">chmod</span>
-    <span class="hint-tag" data-cmd="ssh">ssh</span>
-    <span class="hint-tag" data-cmd="docker">docker</span>
-  </div>
-</section>
 
-<section class="library-section" id="biblioteca">
-  <div class="container">
-    <div class="section-label">// biblioteca</div>
-    <h2>Comandos <span style="color:var(--green)">dinâmicos e atualizados</span></h2>
-    <div id="resultsStats" style="font-family:var(--mono);font-size:0.75rem;color:var(--text-muted);margin-bottom:1rem;"></div>
-    <div class="commands-grid" id="commandsGrid"></div>
-  </div>
-</section>
-
-<!-- Seções resumidas (benefícios, como funciona, contribuir) para manter a essência -->
-<section class="benefits container" style="padding:4rem 2rem">
-  <div class="section-label">// benefícios</div>
-  <div class="benefits-grid">
-    <div class="benefit-card">⚡ Encontre em segundos</div>
-    <div class="benefit-card">🧠 Aprenda aplicando</div>
-    <div class="benefit-card">📈 Do básico ao avançado</div>
-  </div>
-</section>
-
-<footer class="footer">
-  <span>linux/lib_</span>
-  <ul class="footer-links">
-    <li><a href="#">Biblioteca</a></li>
-    <li><a href="#">Contribuir</a></li>
-    <li><a href="#">Sobre</a></li>
-    <li><a href="#">Privacidade</a></li>
-  </ul>
-  <span>© 2025 LinuxLib</span>
-</footer>
-
-<div id="toast" class="toast"></div>
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <button class="modal-close" id="modalClose">&times;</button>
-    <div id="modalBody"></div>
-  </div>
-</div>
-
-<script>
-  // ========== DADOS DOS COMANDOS ==========
-  const commandsData = [
-    { name: "grep", category: "texto", description: "Busca padrões em arquivos usando expressões regulares.", example: "grep -rn 'palavra' ." },
-    { name: "find", category: "sistema", description: "Procura arquivos e diretórios com critérios como nome, tamanho, data.", example: "find /home -name '*.pdf' -size +1M" },
-    { name: "tar", category: "arquivos", description: "Compacta/descompacta arquivos .tar, .gz, .bz2.", example: "tar -xzf arquivo.tar.gz" },
-    { name: "ssh", category: "rede", description: "Conexão segura a servidores remotos.", example: "ssh -i chave.pem user@host" },
-    { name: "rsync", category: "arquivos", description: "Sincronização eficiente de arquivos local/remoto.", example: "rsync -avz src/ user@host:/dest/" },
-    { name: "docker", category: "containers", description: "Gerencia containers Docker.", example: "docker ps -a" },
-    { name: "systemctl", category: "sistema", description: "Controla serviços systemd.", example: "systemctl status nginx" },
-    { name: "chmod", category: "permissões", description: "Altera permissões de arquivos.", example: "chmod 755 script.sh" }
-  ];
-
-  let currentResults = [...commandsData];
-  let selectedIndex = -1;
-
-  // Elementos DOM
-  const searchInput = document.getElementById('searchInput');
-  const commandsGrid = document.getElementById('commandsGrid');
-  const resultsStats = document.getElementById('resultsStats');
-  const toast = document.getElementById('toast');
-
-  function showMessage(msg, isError = false) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2000);
-  }
-
-  function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => showMessage(`✅ Copiado: ${text}`)).catch(() => showMessage('❌ Erro ao copiar', true));
-  }
-
-  function renderCommands() {
-    if (currentResults.length === 0) {
-      commandsGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:var(--text-muted)">Nenhum comando encontrado. Tente outra busca.</div>`;
-      resultsStats.textContent = '0 resultados';
-      return;
-    }
-    resultsStats.textContent = `${currentResults.length} comando(s) encontrado(s)`;
-    commandsGrid.innerHTML = currentResults.map((cmd, idx) => `
-      <div class="command-card" data-index="${idx}" data-name="${cmd.name}" data-example="${cmd.example}">
-        <div class="command-name">
-          ${cmd.name}
-          <span class="command-category">${cmd.category}</span>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <h1 id="hero-title">
+        Domine o terminal Linux<br>
+        com comandos <span class="accent">prontos</span><br>
+        <span class="dim">e explicações claras.</span>
+      </h1>
+      <p>Busque, copie, entenda. Milhares de comandos validados por profissionais.</p>
+      
+      <form class="search-form" role="search" onsubmit="event.preventDefault();">
+        <label for="searchInput" class="sr-only">Buscar comandos Linux</label>
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">$</span>
+          <input type="search" id="searchInput" placeholder="grep, rsync, systemctl, docker..." autocomplete="off">
         </div>
-        <div class="command-desc">${cmd.description}</div>
-        <div class="command-example">$ ${cmd.example}</div>
-        <div class="card-footer">
-          <button class="copy-btn" data-cmd="${cmd.example}">Copiar comando</button>
-          <button class="details-btn" data-name="${cmd.name}">Detalhes</button>
+      </form>
+
+      <div class="search-hints" aria-label="Sugestões de busca">
+        <span class="sr-only">Sugestões:</span>
+        <button type="button" class="hint-tag" data-cmd="find">find</button>
+        <button type="button" class="hint-tag" data-cmd="tar">tar</button>
+        <button type="button" class="hint-tag" data-cmd="chmod">chmod</button>
+        <button type="button" class="hint-tag" data-cmd="ssh">ssh</button>
+        <button type="button" class="hint-tag" data-cmd="docker">docker</button>
+      </div>
+    </section>
+
+    <section class="library-section" id="biblioteca" aria-labelledby="library-title">
+      <div class="container">
+        <div class="section-label" aria-hidden="true">// biblioteca</div>
+        <h2 id="library-title">Comandos <span style="color:var(--green)">dinâmicos e atualizados</span></h2>
+        <div id="resultsStats" role="status" style="font-family:var(--mono);font-size:0.75rem;color:var(--text-muted);margin-bottom:1rem;"></div>
+        <div class="commands-grid" id="commandsGrid">
+          <!-- Conteúdo gerado via JS -->
         </div>
       </div>
-    `).join('');
-    // Reatribuir eventos após render
-    document.querySelectorAll('.copy-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        copyToClipboard(btn.getAttribute('data-cmd'));
-      });
-    });
-    document.querySelectorAll('.details-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const cmdName = btn.getAttribute('data-name');
-        const cmd = commandsData.find(c => c.name === cmdName);
-        if (cmd) showModal(cmd);
-      });
-    });
-    document.querySelectorAll('.command-card').forEach(card => {
-      card.addEventListener('click', (e) => {
-        if (e.target.classList.contains('copy-btn') || e.target.classList.contains('details-btn')) return;
-        const example = card.getAttribute('data-example');
-        if (example) copyToClipboard(example);
-      });
-    });
-    selectedIndex = -1;
-  }
+    </section>
 
-  function filterCommands() {
-    const term = searchInput.value.trim().toLowerCase();
-    if (term === '') currentResults = [...commandsData];
-    else {
-      currentResults = commandsData.filter(cmd => 
-        cmd.name.toLowerCase().includes(term) || 
-        cmd.description.toLowerCase().includes(term) ||
-        cmd.category.toLowerCase().includes(term)
-      );
+    <section class="benefits container" style="padding:4rem 2rem" aria-labelledby="benefits-title">
+      <div class="section-label" aria-hidden="true">// benefícios</div>
+      <h2 id="benefits-title" class="sr-only">Por que usar a LinuxLib</h2>
+      <ul class="benefits-grid">
+        <li class="benefit-card">⚡ Encontre em segundos</li>
+        <li class="benefit-card">🧠 Aprenda aplicando</li>
+        <li class="benefit-card">📈 Do básico ao avançado</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <span class="logo" aria-hidden="true">linux/lib_</span>
+      <nav aria-label="Links do rodapé">
+        <ul class="footer-links">
+          <li><a href="#biblioteca">Biblioteca</a></li>
+          <li><a href="#contribuir">Contribuir</a></li>
+          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="#privacidade">Privacidade</a></li>
+        </ul>
+      </nav>
+      <span>© <time datetime="2025">2025</time> LinuxLib</span>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+  <dialog id="modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="Fechar modal">&times;</button>
+      <div id="modalBody">
+        <!-- Conteúdo gerado via JS -->
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    // ========== DADOS DOS COMANDOS ==========
+    const commandsData = [
+      { name: "grep", category: "texto", description: "Busca padrões em arquivos usando expressões regulares.", example: "grep -rn 'palavra' ." },
+      { name: "find", category: "sistema", description: "Procura arquivos e diretórios com critérios como nome, tamanho, data.", example: "find /home -name '*.pdf' -size +1M" },
+      { name: "tar", category: "arquivos", description: "Compacta/descompacta arquivos .tar, .gz, .bz2.", example: "tar -xzf arquivo.tar.gz" },
+      { name: "ssh", category: "rede", description: "Conexão segura a servidores remotos.", example: "ssh -i chave.pem user@host" },
+      { name: "rsync", category: "arquivos", description: "Sincronização eficiente de arquivos local/remoto.", example: "rsync -avz src/ user@host:/dest/" },
+      { name: "docker", category: "containers", description: "Gerencia containers Docker.", example: "docker ps -a" },
+      { name: "systemctl", category: "sistema", description: "Controla serviços systemd.", example: "systemctl status nginx" },
+      { name: "chmod", category: "permissões", description: "Altera permissões de arquivos.", example: "chmod 755 script.sh" }
+    ];
+
+    let currentResults = [...commandsData];
+    let selectedIndex = -1;
+
+    // Elementos DOM
+    const searchInput = document.getElementById('searchInput');
+    const commandsGrid = document.getElementById('commandsGrid');
+    const resultsStats = document.getElementById('resultsStats');
+    const toast = document.getElementById('toast');
+
+    function showMessage(msg, isError = false) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
     }
-    renderCommands();
-  }
 
-  // Modal de detalhes
-  const modal = document.getElementById('modal');
-  const modalBody = document.getElementById('modalBody');
-  const modalClose = document.getElementById('modalClose');
-  function showModal(cmd) {
-    modalBody.innerHTML = `
-      <h2 style="color:var(--green);font-family:var(--mono);margin-bottom:1rem">${cmd.name}</h2>
-      <p><strong>Categoria:</strong> ${cmd.category}</p>
-      <p><strong>Descrição:</strong> ${cmd.description}</p>
-      <p><strong>Exemplo prático:</strong></p>
-      <pre style="background:var(--bg);padding:0.8rem;border-left:3px solid var(--green);overflow-x:auto">$ ${cmd.example}</pre>
-      <button id="modalCopyBtn" style="margin-top:1rem;background:var(--green);color:var(--bg);border:none;padding:0.5rem 1rem;cursor:pointer;font-family:var(--mono)">Copiar comando</button>
-    `;
-    modal.classList.add('active');
-    document.getElementById('modalCopyBtn')?.addEventListener('click', () => copyToClipboard(cmd.example));
-  }
-  modalClose.addEventListener('click', () => modal.classList.remove('active'));
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-
-  // Keyboard navigation
-  let currentFocus = -1;
-  function updateKeyboardNav() {
-    const cards = document.querySelectorAll('.command-card');
-    if (!cards.length) return;
-    cards.forEach(c => c.classList.remove('keyboard-focus'));
-    if (currentFocus >= 0 && currentFocus < cards.length) {
-      cards[currentFocus].classList.add('keyboard-focus');
-      cards[currentFocus].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => showMessage(`✅ Copiado: ${text}`)).catch(() => showMessage('❌ Erro ao copiar', true));
     }
-  }
-  searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      const cards = document.querySelectorAll('.command-card');
-      if (cards.length) {
-        currentFocus = (currentFocus + 1) % cards.length;
-        updateKeyboardNav();
+
+    function renderCommands() {
+      if (currentResults.length === 0) {
+        commandsGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:var(--text-muted)">Nenhum comando encontrado. Tente outra busca.</div>`;
+        resultsStats.textContent = '0 resultados';
+        return;
       }
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      const cards = document.querySelectorAll('.command-card');
-      if (cards.length) {
-        currentFocus = (currentFocus - 1 + cards.length) % cards.length;
-        updateKeyboardNav();
+      resultsStats.textContent = `${currentResults.length} comando(s) encontrado(s)`;
+      commandsGrid.innerHTML = currentResults.map((cmd, idx) => `
+        <article class="command-card" data-index="${idx}" data-name="${cmd.name}" data-example="${cmd.example}">
+          <div class="command-name">
+            <h3>${cmd.name}</h3>
+            <span class="command-category">${cmd.category}</span>
+          </div>
+          <p class="command-desc">${cmd.description}</p>
+          <div class="command-example">
+            <span class="sr-only">Exemplo:</span>
+            <code>$ ${cmd.example}</code>
+          </div>
+          <div class="card-footer">
+            <button type="button" class="copy-btn" data-cmd="${cmd.example}" aria-label="Copiar comando ${cmd.name}">Copiar comando</button>
+            <button type="button" class="details-btn" data-name="${cmd.name}" aria-label="Ver detalhes de ${cmd.name}">Detalhes</button>
+          </div>
+        </article>
+      `).join('');
+      
+      // Reatribuir eventos após render
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          copyToClipboard(btn.getAttribute('data-cmd'));
+        });
+      });
+      document.querySelectorAll('.details-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const cmdName = btn.getAttribute('data-name');
+          const cmd = commandsData.find(c => c.name === cmdName);
+          if (cmd) showModal(cmd);
+        });
+      });
+      document.querySelectorAll('.command-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('button')) return;
+          const example = card.getAttribute('data-example');
+          if (example) copyToClipboard(example);
+        });
+      });
+      selectedIndex = -1;
+    }
+
+    function filterCommands() {
+      const term = searchInput.value.trim().toLowerCase();
+      if (term === '') currentResults = [...commandsData];
+      else {
+        currentResults = commandsData.filter(cmd => 
+          cmd.name.toLowerCase().includes(term) || 
+          cmd.description.toLowerCase().includes(term) ||
+          cmd.category.toLowerCase().includes(term)
+        );
       }
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (currentFocus >= 0) {
-        const cards = document.querySelectorAll('.command-card');
-        const example = cards[currentFocus].getAttribute('data-example');
-        if (example) copyToClipboard(example);
+      renderCommands();
+    }
+
+    // Modal de detalhes
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+    const modalClose = document.getElementById('modalClose');
+    
+    function showModal(cmd) {
+      modalBody.innerHTML = `
+        <h2 style="color:var(--green);font-family:var(--mono);margin-bottom:1rem">${cmd.name}</h2>
+        <p><strong>Categoria:</strong> ${cmd.category}</p>
+        <p><strong>Descrição:</strong> ${cmd.description}</p>
+        <p><strong>Exemplo prático:</strong></p>
+        <pre style="background:var(--bg);padding:0.8rem;border-left:3px solid var(--green);overflow-x:auto"><code>$ ${cmd.example}</code></pre>
+        <button type="button" id="modalCopyBtn" style="margin-top:1rem;background:var(--green);color:var(--bg);border:none;padding:0.5rem 1rem;cursor:pointer;font-family:var(--mono)">Copiar comando</button>
+      `;
+      if (typeof modal.showModal === 'function') {
+        modal.showModal();
       } else {
-        filterCommands();
+        modal.classList.add('active');
       }
-    } else if (e.key === 'Escape') {
-      searchInput.value = '';
-      filterCommands();
-      searchInput.blur();
+      document.getElementById('modalCopyBtn')?.addEventListener('click', () => copyToClipboard(cmd.example));
     }
-  });
-  // Ctrl+K / Cmd+K
-  document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-      e.preventDefault();
-      searchInput.focus();
+
+    function closeModal() {
+      if (typeof modal.close === 'function') {
+        modal.close();
+      } else {
+        modal.classList.remove('active');
+      }
     }
-  });
-  // Hint tags
-  document.querySelectorAll('.hint-tag').forEach(tag => {
-    tag.addEventListener('click', () => {
-      searchInput.value = tag.getAttribute('data-cmd') || tag.innerText;
-      filterCommands();
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    // Keyboard navigation
+    let currentFocus = -1;
+    function updateKeyboardNav() {
+      const cards = document.querySelectorAll('.command-card');
+      if (!cards.length) return;
+      cards.forEach(c => c.classList.remove('keyboard-focus'));
+      if (currentFocus >= 0 && currentFocus < cards.length) {
+        cards[currentFocus].classList.add('keyboard-focus');
+        cards[currentFocus].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const cards = document.querySelectorAll('.command-card');
+        if (cards.length) {
+          currentFocus = (currentFocus + 1) % cards.length;
+          updateKeyboardNav();
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const cards = document.querySelectorAll('.command-card');
+        if (cards.length) {
+          currentFocus = (currentFocus - 1 + cards.length) % cards.length;
+          updateKeyboardNav();
+        }
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentFocus >= 0) {
+          const cards = document.querySelectorAll('.command-card');
+          const example = cards[currentFocus].getAttribute('data-example');
+          if (example) copyToClipboard(example);
+        } else {
+          filterCommands();
+        }
+      } else if (e.key === 'Escape') {
+        searchInput.value = '';
+        filterCommands();
+        searchInput.blur();
+      }
+    });
+
+    // Ctrl+K / Cmd+K
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+
+    // Hint tags
+    document.querySelectorAll('.hint-tag').forEach(tag => {
+      tag.addEventListener('click', () => {
+        searchInput.value = tag.getAttribute('data-cmd') || tag.innerText;
+        filterCommands();
+        searchInput.focus();
+      });
+    });
+
+    // Explore button
+    document.getElementById('exploreBtn')?.addEventListener('click', () => {
+      document.getElementById('biblioteca').scrollIntoView({ behavior: 'smooth' });
       searchInput.focus();
     });
-  });
-  // Explore button
-  document.getElementById('exploreBtn')?.addEventListener('click', () => {
-    document.getElementById('biblioteca').scrollIntoView({ behavior: 'smooth' });
-    searchInput.focus();
-  });
-  // Hamburger menu
-  const hamburger = document.getElementById('hamburgerBtn');
-  const drawer = document.getElementById('drawer');
-  function abrirDrawer() { drawer.classList.add('open'); hamburger.setAttribute('aria-expanded', 'true'); }
-  function fecharDrawer() { drawer.classList.remove('open'); hamburger.setAttribute('aria-expanded', 'false'); }
-  window.fecharDrawer = fecharDrawer;
-  hamburger.addEventListener('click', () => drawer.classList.contains('open') ? fecharDrawer() : abrirDrawer());
-  document.addEventListener('click', (e) => {
-    if (!drawer.contains(e.target) && !hamburger.contains(e.target)) fecharDrawer();
-  });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('open')) fecharDrawer(); });
-  // Inicialização
-  filterCommands();
-  // Scroll reveal simples
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.style.opacity = '1'; });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.benefit-card, .library-section').forEach(el => { el.style.opacity = '0'; el.style.transition = 'opacity 0.6s'; observer.observe(el); });
-  // Background nav scroll
-  window.addEventListener('scroll', () => {
-    document.querySelector('nav').style.background = window.scrollY > 60 ? 'rgba(8,11,13,0.97)' : 'rgba(8,11,13,0.8)';
-  });
-</script>
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburgerBtn');
+    const drawer = document.getElementById('drawer');
+    
+    function abrirDrawer() { 
+      drawer.classList.add('open'); 
+      hamburger.setAttribute('aria-expanded', 'true'); 
+    }
+    
+    function fecharDrawer() { 
+      drawer.classList.remove('open'); 
+      hamburger.setAttribute('aria-expanded', 'false'); 
+    }
+    
+    window.fecharDrawer = fecharDrawer;
+    
+    hamburger.addEventListener('click', () => drawer.classList.contains('open') ? fecharDrawer() : abrirDrawer());
+    
+    document.addEventListener('click', (e) => {
+      if (!drawer.contains(e.target) && !hamburger.contains(e.target)) fecharDrawer();
+    });
+    
+    document.addEventListener('keydown', (e) => { 
+      if (e.key === 'Escape' && drawer.classList.contains('open')) fecharDrawer(); 
+    });
+
+    // Inicialização
+    filterCommands();
+
+    // Scroll reveal simples
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.style.opacity = '1'; });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.benefit-card, .library-section').forEach(el => { 
+      el.style.opacity = '0'; 
+      el.style.transition = 'opacity 0.6s'; 
+      observer.observe(el); 
+    });
+
+    // Background nav scroll
+    window.addEventListener('scroll', () => {
+      document.querySelector('header').style.background = window.scrollY > 60 ? 'rgba(8,11,13,0.97)' : 'rgba(8,11,13,0.8)';
+    });
+  </script>
 </body>
 </html>
