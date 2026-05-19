@@ -1,5 +1,4 @@
 {
-  "buildCommand": "cd linuxlib-pro && pnpm install && pnpm build",
-  "outputDirectory": "linuxlib-pro/dist",
-  "installCommand": "pnpm install"
+  "buildCommand": "pnpm install && cd linuxlib-pro && pnpm build",
+  "outputDirectory": "linuxlib-pro/dist"
 }
