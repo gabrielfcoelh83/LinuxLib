@@ -1,5 +1,15 @@
 {
-  "buildCommand": "cd linuxlib-pro && pnpm build && cp -r dist/public ../public",
-  "outputDirectory": "public",
-  "installCommand": "pnpm install"
+  "version": 2,
+  "builds": [
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
 }
