@@ -1,8 +1,5 @@
 {
-  "buildCommand": "cd linuxlib-pro && pnpm install && pnpm build",
-  "outputDirectory": "linuxlib-pro/dist",
-  "installCommand": "pnpm install",
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "buildCommand": "cd linuxlib-pro && pnpm build && cp -r dist/public ../public",
+  "outputDirectory": "public",
+  "installCommand": "pnpm install"
 }
