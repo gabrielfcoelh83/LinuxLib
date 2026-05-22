@@ -1,4 +1,0 @@
-{
-  "buildCommand": "npm install && cd linuxlib-pro && npm install && npm run build",
-  "outputDirectory": "linuxlib-pro/dist"
-}
