@@ -1,0 +1,57 @@
+name: Deploy LinuxLib Pro
+
+on:
+  push:
+    branches: ["main", "feature/github-actions"] # Adicionado para testar na própria branch de feature
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validar HTML
+        run: |
+          # Verifica se o index.html existe e é um HTML válido básico
+          if [ -f index.html ]; then
+            echo "index.html encontrado. Validando..."
+            # Usando grep para verificar tags básicas se o npx falhar
+            grep -q "<html>" index.html && echo "Tag <html> encontrada."
+          else
+            echo "Erro: index.html não encontrado!"
+            exit 1
+          fi
+
+  deploy:
+    needs: validate
+    if: github.ref == 'refs/heads/main' # Só faz deploy se for na main
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
