@@ -1,248 +1,193 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinuxLib - Biblioteca de Comandos Linux</title>
-    <meta name="description" content="LinuxLib Pro: Dashboard interativo para explorar, buscar e aprender comandos Linux com exemplos práticos.">
-    <meta name="keywords" content="linux, comandos, terminal, bash, shell, tutorial">
-    <meta name="author" content="Gabriel Coelho">
-    <meta property="og:title" content="LinuxLib - Biblioteca de Comandos Linux">
-    <meta property="og:description" content="Dashboard interativo para explorar comandos Linux">
-    <meta property="og:type" content="website">
+    <title>LinuxLib Pro - Sua Biblioteca de Comandos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary: #10b981;
+            --background: #0f172a;
+            --foreground: #f1f5f9;
+            --card: #1e293b;
+            --border: #334155;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #f1f5f9;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
         }
-
-        .container {
-            max-width: 600px;
-            text-align: center;
-            animation: fadeIn 0.6s ease-out;
+        h1, h2, h3 {
+            font-family: 'Space Grotesk', sans-serif;
         }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
         }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-            font-size: 40px;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-        }
-
-        p {
-            font-size: 1.1rem;
-            color: #cbd5e1;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
-            text-align: left;
-        }
-
-        .feature {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            padding: 20px;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
+        .command-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
             transition: all 0.3s ease;
         }
-
-        .feature:hover {
-            background: rgba(30, 41, 59, 0.8);
-            border-color: rgba(16, 185, 129, 0.5);
-            transform: translateY(-5px);
+        .command-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
-
-        .feature-icon {
-            font-size: 28px;
-            margin-bottom: 10px;
+        .code-block {
+            background-color: #020617;
+            color: #4ade80;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            position: relative;
         }
-
-        .feature-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #10b981;
-            margin-bottom: 5px;
+        .code-block::before {
+            content: "$ ";
+            color: #22c55e;
+            font-weight: bold;
         }
-
-        .feature-desc {
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 40px 0;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border-radius: 8px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        .category-btn.active {
+            background-color: var(--primary);
             color: white;
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(30, 41, 59, 0.8);
-            color: #10b981;
-            border: 2px solid #10b981;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(16, 185, 129, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .footer {
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(16, 185, 129, 0.2);
-            font-size: 0.9rem;
-            color: #64748b;
-        }
-
-        .footer a {
-            color: #10b981;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer a:hover {
-            color: #34d399;
-        }
-
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            p {
-                font-size: 1rem;
-            }
-
-            .features {
-                grid-template-columns: 1fr;
-            }
-
-            .buttons {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="logo">
-            ⌨️
+<body class="min-h-screen pb-20">
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">⌨️</span>
+                <h1 class="text-xl font-bold text-emerald-500">LinuxLib Pro</h1>
+            </div>
+            <div class="relative w-full md:w-96">
+                <input type="text" id="search" placeholder="Buscar comandos (ex: grep, find...)" 
+                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+            </div>
         </div>
-        
-        <h1>LinuxLib Pro</h1>
-        <p>Sua biblioteca definitiva de comandos Linux com exemplos práticos e busca em tempo real</p>
+    </header>
 
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">🔍</div>
-                <div class="feature-title">Busca Rápida</div>
-                <div class="feature-desc">Encontre comandos instantaneamente</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">📂</div>
-                <div class="feature-title">Categorizado</div>
-                <div class="feature-desc">Organizado por tipo de comando</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">📋</div>
-                <div class="feature-title">Copiar Fácil</div>
-                <div class="feature-desc">Um clique para copiar exemplos</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">📱</div>
-                <div class="feature-title">Responsivo</div>
-                <div class="feature-desc">Funciona em qualquer dispositivo</div>
-            </div>
+    <main class="container mx-auto px-4 mt-8">
+        <!-- Hero Section -->
+        <section class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Biblioteca Definitiva Linux</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">Encontre comandos essenciais com exemplos práticos e explicações detalhadas para dominar o terminal.</p>
+        </section>
+
+        <!-- Categories -->
+        <div id="categories" class="flex flex-wrap justify-center gap-2 mb-12">
+            <!-- Categories will be injected here -->
         </div>
 
-        <div class="buttons">
-            <a href="./docs/index.html" class="btn btn-primary">
-                Acessar Dashboard →
-            </a>
-            <a href="https://github.com/gabrielfcoelh83/LinuxLib" class="btn btn-secondary">
-                Ver no GitHub
-            </a>
+        <!-- Commands Grid -->
+        <div id="commands-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Commands will be injected here -->
         </div>
+    </main>
 
-        <div class="footer">
-            <p>LinuxLib Pro é um projeto educacional desenvolvido com React, Tailwind CSS e muito aprendizado.</p>
-            <p>Desenvolvido por <a href="https://github.com/gabrielfcoelh83">Gabriel Coelho</a> • <a href="https://github.com/gabrielfcoelh83/LinuxLib">Código Fonte</a></p>
-        </div>
-    </div>
+    <!-- Footer -->
+    <footer class="mt-20 border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
+        <p>Desenvolvido por <a href="https://github.com/gabrielfcoelh83" class="text-emerald-500 hover:underline">Gabriel Coelho</a></p>
+        <p class="mt-2">LinuxLib Pro • 2026</p>
+    </footer>
+
+    <script>
+        const commands = [
+            { id: "grep-1", name: "grep", category: "Busca", description: "Busca padrões em arquivos usando expressões regulares.", example: "grep -rn 'palavra' .", explanation: "Procura recursivamente pela palavra 'palavra' em todos os arquivos do diretório atual, mostrando o número da linha onde foi encontrada." },
+            { id: "find-1", name: "find", category: "Sistema", description: "Procura arquivos e diretórios com critérios como nome, tamanho, data.", example: "find /home -name '*.pdf' -size +1M", explanation: "Encontra todos os arquivos PDF maiores que 1MB no diretório /home." },
+            { id: "tar-1", name: "tar", category: "Arquivos", description: "Compacta/descompacta arquivos .tar, .gz, .bz2.", example: "tar -xzf arquivo.tar.gz", explanation: "Extrai (x) um arquivo compactado em gzip (z) do arquivo.tar.gz (f)." },
+            { id: "ssh-1", name: "ssh", category: "Rede", description: "Conexão segura a servidores remotos.", example: "ssh -i chave.pem user@host", explanation: "Conecta ao servidor remoto usando uma chave privada para autenticação." },
+            { id: "rsync-1", name: "rsync", category: "Arquivos", description: "Sincronização eficiente de arquivos local/remoto.", example: "rsync -avz src/ user@host:/dest/", explanation: "Sincroniza o diretório 'src' com '/dest/' no servidor remoto, preservando permissões e compactando dados." },
+            { id: "docker-1", name: "docker", category: "Containers", description: "Gerencia containers Docker.", example: "docker ps -a", explanation: "Lista todos os containers (em execução e parados) no seu sistema." },
+            { id: "systemctl-1", name: "systemctl", category: "Sistema", description: "Controla serviços systemd.", example: "systemctl status nginx", explanation: "Verifica o status atual do serviço nginx." },
+            { id: "chmod-1", name: "chmod", category: "Permissões", description: "Altera permissões de arquivos.", example: "chmod 755 script.sh", explanation: "Define permissões de leitura, escrita e execução para o arquivo script.sh." },
+            { id: "ls-1", name: "ls", category: "Sistema", description: "Lista o conteúdo de diretórios.", example: "ls -lah", explanation: "Lista todos os arquivos (incluindo ocultos) com detalhes de permissões e tamanho em formato legível." },
+            { id: "cd-1", name: "cd", category: "Sistema", description: "Muda de diretório.", example: "cd /home/usuario/projetos", explanation: "Navega para o diretório especificado." },
+            { id: "mkdir-1", name: "mkdir", category: "Arquivos", description: "Cria novos diretórios.", example: "mkdir -p projeto/src/components", explanation: "Cria o diretório 'projeto' e seus subdiretórios, mesmo que os pais não existam." },
+            { id: "cp-1", name: "cp", category: "Arquivos", description: "Copia arquivos e diretórios.", example: "cp -r src/ backup/", explanation: "Copia recursivamente o diretório 'src' para 'backup'." },
+            { id: "mv-1", name: "mv", category: "Arquivos", description: "Move ou renomeia arquivos.", example: "mv arquivo.txt novo_nome.txt", explanation: "Renomeia o arquivo para 'novo_nome.txt'." },
+            { id: "rm-1", name: "rm", category: "Arquivos", description: "Remove arquivos e diretórios.", example: "rm -rf diretorio/", explanation: "Remove recursivamente o diretório e todo seu conteúdo (use com cuidado!)." },
+            { id: "cat-1", name: "cat", category: "Busca", description: "Exibe o conteúdo de arquivos.", example: "cat arquivo.txt", explanation: "Mostra o conteúdo completo do arquivo.txt no terminal." }
+        ];
+
+        const categories = [
+            { id: "all", name: "Todos" },
+            { id: "Sistema", name: "Sistema" },
+            { id: "Busca", name: "Busca" },
+            { id: "Arquivos", name: "Arquivos" },
+            { id: "Rede", name: "Rede" },
+            { id: "Containers", name: "Containers" },
+            { id: "Permissões", name: "Permissões" }
+        ];
+
+        let activeCategory = "all";
+        let searchQuery = "";
+
+        function renderCategories() {
+            const container = document.getElementById('categories');
+            container.innerHTML = categories.map(cat => `
+                <button onclick="setCategory('${cat.id}')" 
+                    class="category-btn px-4 py-2 rounded-full text-sm font-medium border border-slate-700 hover:border-emerald-500 transition-colors ${activeCategory === cat.id ? 'active' : 'bg-slate-800 text-slate-300'}">
+                    ${cat.name}
+                </button>
+            `).join('');
+        }
+
+        function renderCommands() {
+            const grid = document.getElementById('commands-grid');
+            const filtered = commands.filter(cmd => {
+                const matchesCat = activeCategory === "all" || cmd.category === activeCategory;
+                const matchesSearch = cmd.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                    cmd.description.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-20 text-slate-500">Nenhum comando encontrado para "${searchQuery}"</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(cmd => `
+                <div class="command-card p-6 rounded-xl flex flex-col gap-4">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-xl font-bold text-emerald-400">${cmd.name}</h3>
+                        <span class="text-[10px] uppercase tracking-wider bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded border border-emerald-500/20">${cmd.category}</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">${cmd.description}</p>
+                    <div class="code-block group">
+                        <code>${cmd.example}</code>
+                        <button onclick="copyToClipboard('${cmd.example}')" class="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 p-1 rounded text-[10px] text-emerald-500">Copiar</button>
+                    </div>
+                    <p class="text-xs text-slate-500 italic"># ${cmd.explanation}</p>
+                </div>
+            `).join('');
+        }
+
+        function setCategory(id) {
+            activeCategory = id;
+            renderCategories();
+            renderCommands();
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Simple feedback
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = 'Copiado!';
+                setTimeout(() => btn.innerText = originalText, 2000);
+            });
+        }
+
+        document.getElementById('search').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderCommands();
+        });
+
+        // Initial render
+        renderCategories();
+        renderCommands();
+    </script>
 </body>
 </html>
