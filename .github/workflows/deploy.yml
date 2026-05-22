@@ -1,37 +1,41 @@
-name: Deploy LinuxLib Pro
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: ["main"]
-  workflow_dispatch:
+    branches: ["main", "develop", "feature/*"]
+  pull_request:
+    branches: ["main", "develop"]
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # ETAPA 1: VALIDAÇÃO (Roda em todas as branches)
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      
+      - name: Validar HTML
+        run: npx html-validate index.html
+        
+      - name: Verificar Links Quebrados
+        uses: lycheeverse/lychee-action@v1.9.0
+        with:
+          args: index.html
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+  # ETAPA 2: DEPLOY (Só roda na MAIN ou DEVELOP se a validação passar)
+  deploy:
+    needs: validate
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v4
