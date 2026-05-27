@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinuxLib Pro - Sua Biblioteca de Comandos</title>
+    <title>LinuxLib Pro - Engenharia de Prompts para Linux</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -33,6 +33,7 @@
         .command-card:hover {
             border-color: var(--primary);
             transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
         }
         .code-block {
             background-color: #020617;
@@ -41,6 +42,8 @@
             border-radius: 0.5rem;
             font-size: 0.875rem;
             position: relative;
+            overflow-x: auto;
+            border: 1px solid #1e293b;
         }
         .code-block::before {
             content: "$ ";
@@ -51,19 +54,95 @@
             background-color: var(--primary);
             color: white;
         }
+        .framework-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .framework-clear { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .framework-costar { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .framework-crispe { background-color: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3); }
+
+        .example-section {
+            border-left: 3px solid var(--primary);
+            padding-left: 1rem;
+            margin: 1rem 0;
+        }
+        .example-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .use-case {
+            background-color: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #d1fae5;
+        }
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .tab-btn.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tip-box {
+            background-color: rgba(250, 204, 21, 0.05);
+            border-left: 3px solid #faca15;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+        .danger-box {
+            background-color: rgba(239, 68, 68, 0.05);
+            border-left: 3px solid #ef4444;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            color: #fca5a5;
+        }
     </style>
 </head>
 <body class="min-h-screen pb-20">
     <!-- Header -->
-    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <span class="text-2xl">⌨️</span>
-                <h1 class="text-xl font-bold text-emerald-500">LinuxLib Pro</h1>
-            </div>
-            <div class="relative w-full md:w-96">
-                <input type="text" id="search" placeholder="Buscar comandos (ex: grep, find...)" 
-                    class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+    <header class="border-b border-slate-800 bg-gradient-to-r from-slate-900/80 to-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">⌨️</span>
+                    <div>
+                        <h1 class="text-2xl font-bold text-emerald-500">LinuxLib Pro</h1>
+                        <p class="text-xs text-slate-400">Engenharia de Prompts para Dominar Linux</p>
+                    </div>
+                </div>
+                <div class="relative">
+                    <input type="text" id="search" placeholder="Buscar comandos (ex: grep, find, docker...)" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                </div>
             </div>
         </div>
     </header>
@@ -72,7 +151,14 @@
         <!-- Hero Section -->
         <section class="text-center mb-12">
             <h2 class="text-4xl md:text-5xl font-bold mb-4">Biblioteca Definitiva Linux</h2>
-            <p class="text-slate-400 max-w-2xl mx-auto">Encontre comandos essenciais com exemplos práticos e explicações detalhadas para dominar o terminal.</p>
+            <p class="text-slate-400 max-w-3xl mx-auto mb-6">Comandos essenciais com exemplos práticos, explicações detalhadas e frameworks de engenharia de prompts para dominar o terminal.</p>
+            
+            <!-- Framework Info -->
+            <div class="inline-flex flex-wrap gap-2 justify-center">
+                <span class="framework-badge framework-clear">CLEAR</span>
+                <span class="framework-badge framework-costar">CO-STAR</span>
+                <span class="framework-badge framework-crispe">CRISPE</span>
+            </div>
         </section>
 
         <!-- Categories -->
@@ -81,7 +167,7 @@
         </div>
 
         <!-- Commands Grid -->
-        <div id="commands-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="commands-grid" class="space-y-6">
             <!-- Commands will be injected here -->
         </div>
     </main>
@@ -89,26 +175,305 @@
     <!-- Footer -->
     <footer class="mt-20 border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
         <p>Desenvolvido por <a href="https://github.com/gabrielfcoelh83" class="text-emerald-500 hover:underline">Gabriel Coelho</a></p>
-        <p class="mt-2">LinuxLib Pro • 2026</p>
+        <p class="mt-2">LinuxLib Pro • 2026 • Aplicando Engenharia de Prompts</p>
     </footer>
 
     <script>
         const commands = [
-            { id: "grep-1", name: "grep", category: "Busca", description: "Busca padrões em arquivos usando expressões regulares.", example: "grep -rn 'palavra' .", explanation: "Procura recursivamente pela palavra 'palavra' em todos os arquivos do diretório atual, mostrando o número da linha onde foi encontrada." },
-            { id: "find-1", name: "find", category: "Sistema", description: "Procura arquivos e diretórios com critérios como nome, tamanho, data.", example: "find /home -name '*.pdf' -size +1M", explanation: "Encontra todos os arquivos PDF maiores que 1MB no diretório /home." },
-            { id: "tar-1", name: "tar", category: "Arquivos", description: "Compacta/descompacta arquivos .tar, .gz, .bz2.", example: "tar -xzf arquivo.tar.gz", explanation: "Extrai (x) um arquivo compactado em gzip (z) do arquivo.tar.gz (f)." },
-            { id: "ssh-1", name: "ssh", category: "Rede", description: "Conexão segura a servidores remotos.", example: "ssh -i chave.pem user@host", explanation: "Conecta ao servidor remoto usando uma chave privada para autenticação." },
-            { id: "rsync-1", name: "rsync", category: "Arquivos", description: "Sincronização eficiente de arquivos local/remoto.", example: "rsync -avz src/ user@host:/dest/", explanation: "Sincroniza o diretório 'src' com '/dest/' no servidor remoto, preservando permissões e compactando dados." },
-            { id: "docker-1", name: "docker", category: "Containers", description: "Gerencia containers Docker.", example: "docker ps -a", explanation: "Lista todos os containers (em execução e parados) no seu sistema." },
-            { id: "systemctl-1", name: "systemctl", category: "Sistema", description: "Controla serviços systemd.", example: "systemctl status nginx", explanation: "Verifica o status atual do serviço nginx." },
-            { id: "chmod-1", name: "chmod", category: "Permissões", description: "Altera permissões de arquivos.", example: "chmod 755 script.sh", explanation: "Define permissões de leitura, escrita e execução para o arquivo script.sh." },
-            { id: "ls-1", name: "ls", category: "Sistema", description: "Lista o conteúdo de diretórios.", example: "ls -lah", explanation: "Lista todos os arquivos (incluindo ocultos) com detalhes de permissões e tamanho em formato legível." },
-            { id: "cd-1", name: "cd", category: "Sistema", description: "Muda de diretório.", example: "cd /home/usuario/projetos", explanation: "Navega para o diretório especificado." },
-            { id: "mkdir-1", name: "mkdir", category: "Arquivos", description: "Cria novos diretórios.", example: "mkdir -p projeto/src/components", explanation: "Cria o diretório 'projeto' e seus subdiretórios, mesmo que os pais não existam." },
-            { id: "cp-1", name: "cp", category: "Arquivos", description: "Copia arquivos e diretórios.", example: "cp -r src/ backup/", explanation: "Copia recursivamente o diretório 'src' para 'backup'." },
-            { id: "mv-1", name: "mv", category: "Arquivos", description: "Move ou renomeia arquivos.", example: "mv arquivo.txt novo_nome.txt", explanation: "Renomeia o arquivo para 'novo_nome.txt'." },
-            { id: "rm-1", name: "rm", category: "Arquivos", description: "Remove arquivos e diretórios.", example: "rm -rf diretorio/", explanation: "Remove recursivamente o diretório e todo seu conteúdo (use com cuidado!)." },
-            { id: "cat-1", name: "cat", category: "Busca", description: "Exibe o conteúdo de arquivos.", example: "cat arquivo.txt", explanation: "Mostra o conteúdo completo do arquivo.txt no terminal." }
+            {
+                id: "grep-1",
+                name: "grep",
+                category: "Busca",
+                shortDesc: "Busca padrões em arquivos",
+                frameworks: ["CLEAR", "CO-STAR"],
+                // Aplicando CLEAR: Conciso, Lógico, Explícito
+                description: "grep busca por padrões de texto (usando regex) em arquivos. É essencial para filtrar logs, encontrar configurações e validar dados.",
+                role: "Desenvolvedor ou DevOps analisando logs",
+                objective: "Encontrar linhas específicas em arquivos grandes",
+                examples: [
+                    {
+                        level: "Básico",
+                        command: "grep 'erro' arquivo.log",
+                        explanation: "Busca a palavra 'erro' no arquivo.log e exibe as linhas encontradas."
+                    },
+                    {
+                        level: "Intermediário",
+                        command: "grep -rn 'palavra' /home/user/projetos",
+                        explanation: "Busca recursivamente (-r) em todos os arquivos da pasta, mostrando o número da linha (-n) onde 'palavra' aparece."
+                    },
+                    {
+                        level: "Avançado",
+                        command: "grep -E '^[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}' ips.txt",
+                        explanation: "Usa regex estendida (-E) para encontrar linhas que começam com IPs válidos (padrão: 192.168.1.1)."
+                    }
+                ],
+                useCases: [
+                    "Filtrar erros em logs: grep 'ERROR' app.log | wc -l",
+                    "Encontrar padrões com contexto: grep -C 3 'palavra' arquivo.txt",
+                    "Buscar case-insensitive: grep -i 'ERRO' arquivo.log"
+                ],
+                tips: [
+                    "Use -i para ignorar maiúsculas/minúsculas",
+                    "Use -v para inverter a busca (tudo que NÃO corresponde)",
+                    "Combine com pipe (|) para processamento em cadeia"
+                ],
+                warnings: [
+                    "Em arquivos muito grandes, grep pode ser lento. Considere usar estruturas de dados indexadas.",
+                    "Regex complexas podem ter problemas de performance"
+                ]
+            },
+
+            {
+                id: "find-1",
+                name: "find",
+                category: "Sistema",
+                shortDesc: "Procura arquivos e diretórios",
+                frameworks: ["CLEAR", "CO-STAR"],
+                description: "find localiza arquivos/diretórios com critérios: nome, tamanho, data, permissões, etc. Mais potente que ls.",
+                role: "Administrador de sistema",
+                objective: "Encontrar arquivos específicos em diretórios grandes",
+                examples: [
+                    {
+                        level: "Básico",
+                        command: "find /home -name '*.pdf'",
+                        explanation: "Encontra todos os arquivos PDF no diretório /home e seus subdiretórios."
+                    },
+                    {
+                        level: "Intermediário",
+                        command: "find /var/log -name '*.log' -mtime -7",
+                        explanation: "Encontra logs modificados nos últimos 7 dias (-mtime -7)."
+                    },
+                    {
+                        level: "Avançado",
+                        command: "find . -type f -size +100M -exec du -h {} \\; | sort -rh",
+                        explanation: "Encontra arquivos maiores que 100MB, executa du em cada um e ordena por tamanho."
+                    }
+                ],
+                useCases: [
+                    "Limpar arquivos antigos: find /tmp -type f -mtime +30 -delete",
+                    "Encontrar arquivos grandes: find . -type f -size +1G",
+                    "Buscar por permissões: find . -perm 644 -type f"
+                ],
+                tips: [
+                    "Use -type para filtrar: f (arquivo), d (diretório), l (link simbólico)",
+                    "Use -exec para executar comandos nos resultados",
+                    "-empty encontra arquivos/dirs vazios"
+                ],
+                warnings: [
+                    "find em diretórios raiz (/) pode ser muito lento",
+                    "-delete é irreversível! Teste antes com -ls"
+                ]
+            },
+
+            {
+                id: "ssh-1",
+                name: "ssh",
+                category: "Rede",
+                shortDesc: "Conexão segura a servidores",
+                frameworks: ["CRISPE"],
+                description: "ssh (Secure Shell) estabelece conexões criptografadas a servidores remotos para execução de comandos ou acesso interativo.",
+                role: "DevOps/SysAdmin gerenciando servidores",
+                objective: "Conectar e gerenciar servidores remotamente",
+                examples: [
+                    {
+                        level: "Básico",
+                        command: "ssh user@example.com",
+                        explanation: "Conecta ao servidor example.com com o usuário 'user' (usa senha)."
+                    },
+                    {
+                        level: "Intermediário",
+                        command: "ssh -i ~/.ssh/id_rsa -p 2222 admin@server.com",
+                        explanation: "Conecta usando chave privada (-i), porta customizada (-p 2222)."
+                    },
+                    {
+                        level: "Avançado",
+                        command: "ssh -L 8080:localhost:3000 user@server.com",
+                        explanation: "Tunnel: encaminha porta local 8080 para porta 3000 do servidor remoto (útil para acessar services internos)."
+                    }
+                ],
+                useCases: [
+                    "Executar comando remoto: ssh user@host 'ls -la'",
+                    "Copiar arquivos: scp arquivo.txt user@host:/home/user/",
+                    "Monitorar servidor: ssh user@host 'tail -f /var/log/app.log'"
+                ],
+                tips: [
+                    "Configure ~/.ssh/config para atalhos",
+                    "Use ssh-keygen -t ed25519 para chaves modernas",
+                    "ssh-agent armazena chaves para não digitar senha"
+                ],
+                warnings: [
+                    "Nunca compartilhe suas chaves privadas",
+                    "Desabilite acesso por senha em produção (PermitRootLogin no, PasswordAuthentication no)"
+                ]
+            },
+
+            {
+                id: "docker-1",
+                name: "docker",
+                category: "Containers",
+                shortDesc: "Gerencia containers",
+                frameworks: ["CLEAR", "CRISPE"],
+                description: "docker cria, executa e gerencia containers — ambientes isolados com aplicações e dependências embutidas.",
+                role: "DevOps/Desenvolvedor",
+                objective: "Containerizar e orquestrar aplicações",
+                examples: [
+                    {
+                        level: "Básico",
+                        command: "docker ps",
+                        explanation: "Lista containers em execução."
+                    },
+                    {
+                        level: "Intermediário",
+                        command: "docker run -d -p 8080:3000 -e NODE_ENV=production minha-app:latest",
+                        explanation: "Executa container em background (-d), mapeia porta 8080 → 3000, define variável de ambiente."
+                    },
+                    {
+                        level: "Avançado",
+                        command: "docker build -t minha-app:v1.0 --build-arg VERSION=1.0 .",
+                        explanation: "Constrói imagem com tag, passando argumentos de build para o Dockerfile."
+                    }
+                ],
+                useCases: [
+                    "Remover containers parados: docker container prune",
+                    "Ver logs em tempo real: docker logs -f <container-id>",
+                    "Executar shell no container: docker exec -it <container-id> /bin/bash"
+                ],
+                tips: [
+                    "Use .dockerignore como .gitignore",
+                    "Multi-stage builds reduzem tamanho de imagens",
+                    "Use docker-compose para orquestrar múltiplos containers"
+                ],
+                warnings: [
+                    "Containers são efêmeros — dados devem ser em volumes",
+                    "Root no container = risco de segurança. Use USER no Dockerfile"
+                ]
+            },
+
+            {
+                id: "chmod-1",
+                name: "chmod",
+                category: "Permissões",
+                shortDesc: "Altera permissões de arquivos",
+                frameworks: ["CLEAR"],
+                description: "chmod (change mode) altera permissões (r=read, w=write, x=execute) de arquivos para usuário, grupo e outros.",
+                role: "Administrador de sistema",
+                objective: "Controlar acesso a arquivos e diretórios",
+                examples: [
+                    {
+                        level: "Básico",
+                        command: "chmod 755 script.sh",
+                        explanation: "755 = owner:rwx (7), group:r-x (5), other:r-x (5). Arquivo executável para todos."
+                    },
+                    {
+                        level: "Intermediário",
+                        command: "chmod u+x script.sh",
+                        explanation: "Adiciona permissão de execução (x) para o owner (u). Sintaxe simbólica."
+                    },
+                    {
+                        level: "Avançado",
+                        command: "chmod -R 700 ~/private && chmod g+rx ~/public",
+                        explanation: "Recursivamente (-R): pasta privada só para owner. Depois, adiciona leitura/exec para o grupo em public."
+                    }
+                ],
+                useCases: [
+                    "Arquivo sensível (SSH keys): chmod 600 ~/.ssh/id_rsa",
+                    "Diretório compartilhado: chmod 775 /shared/project",
+                    "Revogando write: chmod a-w importante.txt"
+                ],
+                tips: [
+                    "Memorize: 4=read, 2=write, 1=execute. 7=read+write+execute",
+                    "ls -l mostra permissões atuais",
+                    "-R aplica recursivamente"
+                ],
+                warnings: [
+                    "chmod 777 é inseguro — evite permissões muito abertas",
+                    "Trocar permissões de /etc, /root ou /bin sem cuidado pode quebrar o sistema"
+                ]
+            },
+
+            {
+                id: "systemctl-1",
+                name: "systemctl",
+                category: "Sistema",
+                shortDesc: "Controla serviços systemd",
+                frameworks: ["CO-STAR"],
+                description: "systemctl gerencia serviços, sockets e targets do systemd — init system moderno do Linux.",
+                role: "DevOps/SysAdmin",
+                objective: "Iniciar, parar e monitorar serviços",
+                examples: [
+                    {
+                        level: "Básico",
+                        command: "systemctl status nginx",
+                        explanation: "Mostra status do serviço nginx (ativo, inativo, com erro)."
+                    },
+                    {
+                        level: "Intermediário",
+                        command: "systemctl start nginx && systemctl enable nginx",
+                        explanation: "Inicia o serviço E o habilita para iniciar automaticamente no boot."
+                    },
+                    {
+                        level: "Avançado",
+                        command: "systemctl restart nginx || systemctl status nginx && journalctl -u nginx -n 50",
+                        explanation: "Tenta reiniciar; se falhar, mostra status e os últimos 50 logs do serviço."
+                    }
+                ],
+                useCases: [
+                    "Ver logs em tempo real: journalctl -u nginx -f",
+                    "Habilitar/desabilitar na boot: systemctl enable/disable apache2",
+                    "Recarregar configuração: systemctl reload postgresql"
+                ],
+                tips: [
+                    "systemctl list-units mostra todos os serviços",
+                    "journalctl é mais poderoso que logs tradicionais",
+                    "use --no-pager para evitar paginação"
+                ],
+                warnings: [
+                    "Reiniciar serviços pode interromper conexões ativas",
+                    "Desabilitar um serviço crítico pode impedir boot"
+                ]
+            },
+
+            {
+                id: "tar-1",
+                name: "tar",
+                category: "Arquivos",
+                shortDesc: "Compacta/descompacta arquivos",
+                frameworks: ["CLEAR"],
+                description: "tar agrupa arquivos em um único arquivo (tarball), frequentemente compactado com gzip (.gz) ou bzip2 (.bz2).",
+                role: "Qualquer desenvolvedor/sysadmin",
+                objective: "Comprimir e descomprimir arquivos para backup ou distribuição",
+                examples: [
+                    {
+                        level: "Básico",
+                        command: "tar -xzf arquivo.tar.gz",
+                        explanation: "Extrai (-x) um tarball compactado em gzip (-z) do arquivo.tar.gz (-f)."
+                    },
+                    {
+                        level: "Intermediário",
+                        command: "tar -czf backup.tar.gz ~/projeto/ --exclude='node_modules'",
+                        explanation: "Cria (-c) tarball compactado (-z) excluindo node_modules para economizar espaço."
+                    },
+                    {
+                        level: "Avançado",
+                        command: "tar -xzf arquivo.tar.gz -C /destino/ --strip-components=1",
+                        explanation: "Extrai em /destino/, removendo o primeiro nível de diretório (útil quando tarball tem wrapper dir)."
+                    }
+                ],
+                useCases: [
+                    "Listar conteúdo: tar -tzf arquivo.tar.gz",
+                    "Backup incremental: tar -czf backup.tar.gz -g snap.file ~",
+                    "Comparar com original: tar -tzf backup.tar.gz | sort > lista.txt"
+                ],
+                tips: [
+                    "Memorize: c=create, x=extract, t=test (listar), z=gzip, j=bzip2, f=file",
+                    "-v (verbose) mostra progresso",
+                    "tar é mais eficiente que zip para compressão em Linux"
+                ],
+                warnings: [
+                    "Extrair em diretório errado pode bagunçar o sistema",
+                    "Tarballs com path absoluto (/) podem sobrescrever arquivos críticos"
+                ]
+            }
         ];
 
         const categories = [
@@ -148,18 +513,90 @@
                 return;
             }
 
-            grid.innerHTML = filtered.map(cmd => `
-                <div class="command-card p-6 rounded-xl flex flex-col gap-4">
-                    <div class="flex justify-between items-start">
-                        <h3 class="text-xl font-bold text-emerald-400">${cmd.name}</h3>
+            grid.innerHTML = filtered.map((cmd, idx) => `
+                <div class="command-card p-6 rounded-xl">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-emerald-400 mb-1">${cmd.name}</h3>
+                            <p class="text-slate-400 text-sm">${cmd.shortDesc}</p>
+                        </div>
                         <span class="text-[10px] uppercase tracking-wider bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded border border-emerald-500/20">${cmd.category}</span>
                     </div>
-                    <p class="text-slate-400 text-sm">${cmd.description}</p>
-                    <div class="code-block group">
-                        <code>${cmd.example}</code>
-                        <button onclick="copyToClipboard('${cmd.example}')" class="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 p-1 rounded text-[10px] text-emerald-500">Copiar</button>
+
+                    <!-- Frameworks Used -->
+                    <div class="mb-4 pb-4 border-b border-slate-700">
+                        ${cmd.frameworks.map(fw => {
+                            let fwClass = '';
+                            if (fw === 'CLEAR') fwClass = 'framework-clear';
+                            else if (fw === 'CO-STAR') fwClass = 'framework-costar';
+                            else if (fw === 'CRISPE') fwClass = 'framework-crispe';
+                            return `<span class="framework-badge ${fwClass}">${fw}</span>`;
+                        }).join('')}
                     </div>
-                    <p class="text-xs text-slate-500 italic"># ${cmd.explanation}</p>
+
+                    <!-- Description -->
+                    <p class="text-slate-400 text-sm mb-4">${cmd.description}</p>
+
+                    <!-- Context/Role -->
+                    <div class="bg-slate-800/50 p-3 rounded mb-4 border border-slate-700">
+                        <p class="text-xs font-semibold text-slate-300 mb-1">👤 Quem usa:</p>
+                        <p class="text-xs text-slate-400">${cmd.role}</p>
+                    </div>
+
+                    <!-- Examples Tabs -->
+                    <div class="mb-4">
+                        <div class="flex border-b border-slate-700 mb-3 gap-2">
+                            ${cmd.examples.map((ex, i) => `
+                                <button class="tab-btn ${i === 0 ? 'active' : ''}" onclick="switchTab(event, 'cmd-${cmd.id}-example-${i}')">
+                                    ${ex.level}
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        ${cmd.examples.map((ex, i) => `
+                            <div id="cmd-${cmd.id}-example-${i}" class="tab-content ${i === 0 ? 'active' : ''} example-section mb-3">
+                                <p class="example-label mb-2">${ex.level}</p>
+                                <div class="code-block group relative mb-2">
+                                    <code>${escapeHtml(ex.command)}</code>
+                                    <button onclick="copyToClipboard('${ex.command.replace(/'/g, "\\'")}', this)" class="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 px-2 py-1 rounded text-[10px] text-emerald-500 border border-emerald-500/30">Copiar</button>
+                                </div>
+                                <p class="text-xs text-slate-500">${ex.explanation}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Use Cases -->
+                    <div class="mb-4">
+                        <p class="text-xs font-semibold text-emerald-400 mb-2">💡 Casos de Uso:</p>
+                        ${cmd.useCases.map(uc => `
+                            <div class="use-case">
+                                <code>${escapeHtml(uc)}</code>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Tips -->
+                    <div class="mb-4">
+                        <p class="text-xs font-semibold text-blue-400 mb-2">✨ Dicas:</p>
+                        ${cmd.tips.map(tip => `
+                            <div class="tip-box">
+                                <p class="text-slate-300">${tip}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Warnings -->
+                    ${cmd.warnings.length > 0 ? `
+                        <div>
+                            <p class="text-xs font-semibold text-red-400 mb-2">⚠️ Cuidado:</p>
+                            ${cmd.warnings.map(warn => `
+                                <div class="danger-box">
+                                    <p>${warn}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
                 </div>
             `).join('');
         }
@@ -170,10 +607,36 @@
             renderCommands();
         }
 
-        function copyToClipboard(text) {
+        function switchTab(event, tabId) {
+            event.preventDefault();
+            const tabBtn = event.target;
+            const cmdCardContainer = tabBtn.closest('.command-card');
+            
+            // Remove active class de todos os tabs
+            cmdCardContainer.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            cmdCardContainer.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Ativa o tab clicado
+            tabBtn.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function copyToClipboard(text, button) {
             navigator.clipboard.writeText(text).then(() => {
-                alert('Comando copiado!');
+                const originalText = button.textContent;
+                button.textContent = '✓ Copiado!';
+                button.style.color = '#10b981';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.color = '#10b981';
+                }, 2000);
             });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         document.getElementById('search').addEventListener('input', (e) => {
