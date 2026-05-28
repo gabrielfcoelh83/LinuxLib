@@ -1,652 +1,512 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinuxLib Pro - Engenharia de Prompts para Linux</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #10b981;
-            --background: #0f172a;
-            --foreground: #f1f5f9;
-            --card: #1e293b;
-            --border: #334155;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--background);
-            color: var(--foreground);
-        }
-        h1, h2, h3 {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        code, pre {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .command-card {
-            background-color: var(--card);
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-        .command-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
-        }
-        .code-block {
-            background-color: #020617;
-            color: #4ade80;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            position: relative;
-            overflow-x: auto;
-            border: 1px solid #1e293b;
-        }
-        .code-block::before {
-            content: "$ ";
-            color: #22c55e;
-            font-weight: bold;
-        }
-        .category-btn.active {
-            background-color: var(--primary);
-            color: white;
-        }
-        .framework-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.375rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .framework-clear { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .framework-costar { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
-        .framework-crispe { background-color: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3); }
-
-        .example-section {
-            border-left: 3px solid var(--primary);
-            padding-left: 1rem;
-            margin: 1rem 0;
-        }
-        .example-label {
-            font-weight: 600;
-            color: var(--primary);
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .use-case {
-            background-color: rgba(16, 185, 129, 0.05);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            padding: 0.75rem;
-            border-radius: 0.375rem;
-            margin-top: 0.5rem;
-            font-size: 0.875rem;
-            color: #d1fae5;
-        }
-        .tab-btn {
-            padding: 0.5rem 1rem;
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .tab-btn.active {
-            border-bottom-color: var(--primary);
-            color: var(--primary);
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .tip-box {
-            background-color: rgba(250, 204, 21, 0.05);
-            border-left: 3px solid #faca15;
-            padding: 0.75rem;
-            margin: 0.5rem 0;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-        }
-        .danger-box {
-            background-color: rgba(239, 68, 68, 0.05);
-            border-left: 3px solid #ef4444;
-            padding: 0.75rem;
-            margin: 0.5rem 0;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            color: #fca5a5;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LinuxLib Pro — Biblioteca de Comandos Linux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="min-h-screen pb-20">
-    <!-- Header -->
-    <header class="border-b border-slate-800 bg-gradient-to-r from-slate-900/80 to-slate-900/50 backdrop-blur-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex flex-col gap-4">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">⌨️</span>
-                    <div>
-                        <h1 class="text-2xl font-bold text-emerald-500">LinuxLib Pro</h1>
-                        <p class="text-xs text-slate-400">Engenharia de Prompts para Dominar Linux</p>
-                    </div>
-                </div>
-                <div class="relative">
-                    <input type="text" id="search" placeholder="Buscar comandos (ex: grep, find, docker...)" 
-                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
-                </div>
-            </div>
-        </div>
-    </header>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo"><div class="logo-ic">⌨</div><div><div class="logo-nm">LinuxLib Pro</div><div class="logo-tg">v2.0 · 2026</div></div></div>
+  <div><div class="sl">Categorias</div>
+  <nav class="snav">
+    <button class="cat-btn active" data-cat="all"        onclick="setCategory('all',this)">        <span class="ci">📋</span>Todos         <span class="cn">77</span></button>
+    <button class="cat-btn" data-cat="Operadores"   onclick="setCategory('Operadores',this)">   <span class="ci">⚡</span>Operadores     <span class="cn">8</span></button>
+    <button class="cat-btn" data-cat="Símbolos"     onclick="setCategory('Símbolos',this)">     <span class="ci">🔣</span>Símbolos       <span class="cn">4</span></button>
+    <button class="cat-btn" data-cat="Atalhos"      onclick="setCategory('Atalhos',this)">      <span class="ci">⌨️</span>Atalhos        <span class="cn">4</span></button>
+    <button class="cat-btn" data-cat="Sistema"      onclick="setCategory('Sistema',this)">      <span class="ci">💻</span>Sistema        <span class="cn">7</span></button>
+    <button class="cat-btn" data-cat="Navegação"    onclick="setCategory('Navegação',this)">    <span class="ci">🧭</span>Navegação      <span class="cn">6</span></button>
+    <button class="cat-btn" data-cat="Arquivos"     onclick="setCategory('Arquivos',this)">     <span class="ci">📄</span>Arquivos       <span class="cn">8</span></button>
+    <button class="cat-btn" data-cat="Busca"        onclick="setCategory('Busca',this)">        <span class="ci">🔍</span>Busca          <span class="cn">7</span></button>
+    <button class="cat-btn" data-cat="Pacotes"      onclick="setCategory('Pacotes',this)">      <span class="ci">📦</span>Pacotes        <span class="cn">6</span></button>
+    <button class="cat-btn" data-cat="Usuários"     onclick="setCategory('Usuários',this)">     <span class="ci">👤</span>Usuários       <span class="cn">6</span></button>
+    <button class="cat-btn" data-cat="Permissões"   onclick="setCategory('Permissões',this)">   <span class="ci">🔒</span>Permissões     <span class="cn">5</span></button>
+    <button class="cat-btn" data-cat="Processos"    onclick="setCategory('Processos',this)">    <span class="ci">⚙️</span>Processos      <span class="cn">7</span></button>
+    <button class="cat-btn" data-cat="Rede"         onclick="setCategory('Rede',this)">         <span class="ci">🌐</span>Rede           <span class="cn">5</span></button>
+    <button class="cat-btn" data-cat="SSH"          onclick="setCategory('SSH',this)">          <span class="ci">🔐</span>SSH            <span class="cn">8</span></button>
+  </nav></div>
+  <div style="margin-top:auto;padding:0 .4rem;border-top:1px solid var(--bd-s);padding-top:.75rem">
+    <p style="font-size:.65rem;color:var(--tx-f);line-height:1.7">Por <a href="https://github.com/gabrielfcoelh83" style="color:var(--pr);text-decoration:none">Gabriel Coelho</a><br>Ref. <a href="https://github.com/thiagoalvesfoz/guia-comandos-linux" style="color:var(--tx-f);text-decoration:none">guia-comandos-linux</a></p>
+  </div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="sw"><span class="si">⌕</span>
+    <input id="search" type="text" placeholder="Buscar comando ou descrição..." autocomplete="off" spellcheck="false">
+    <span class="sk">/</span>
+  </div>
+  <div class="tr">
+    <div class="lw">
+      <button class="lvl active" onclick="setLevel('all',this)">Todos</button>
+      <button class="lvl" onclick="setLevel('iniciante',this)">🟢 Iniciante</button>
+      <button class="lvl" onclick="setLevel('intermediario',this)">🔵 Médio</button>
+      <button class="lvl" onclick="setLevel('avancado',this)">🟣 Avançado</button>
+    </div>
+    <div class="rc"><span id="rc">77</span> comandos</div>
+  </div>
+</header>
+<div class="content">
+<section class="cat-sec" data-section="Operadores">
+<div class="sh"><span class="si2">⚡</span><h2 class="st">Operadores Básicos</h2><span class="sc">8 comandos</span></div>
+<div class="grid"><article class="cmd-card" data-category="Operadores" data-levels="iniciante,intermediario,avancado" data-tags="cd navegar diretório pasta home">
+<div class="ch"><div class="ch-l"><div class="cname">cd</div><div class="cdesc">Navegar entre diretórios no terminal.</div></div><div class="cbs"><span class="badge b-c">Operadores</span></div></div>
+<div class="cc"><div class="tl" id="g-cd"><button class="tab-t active" data-tab="cd-0" onclick="switchTab('cd-0','g-cd')">🟢 Básico</button><button class="tab-t " data-tab="cd-1" onclick="switchTab('cd-1','g-cd')">🔵 Médio</button><button class="tab-t " data-tab="cd-2" onclick="switchTab('cd-2','g-cd')">🟣 Avançado</button></div><div id="p-cd-0" class="tab-p active">
+<div class="cw"><div class="cb">cd /home/usuario</div><button class="cp" onclick="copyCmd(this,'cd /home/usuario')">⎘</button></div>
+<p class="ce">Vai para o caminho absoluto especificado.</p></div><div id="p-cd-1" class="tab-p ">
+<div class="cw"><div class="cb">cd ~/projetos &amp;&amp; ls -la</div><button class="cp" onclick="copyCmd(this,'cd ~/projetos &amp;&amp; ls -la')">⎘</button></div>
+<p class="ce">Navega e já lista o conteúdo. <em>~</em> = home do usuário.</p></div><div id="p-cd-2" class="tab-p ">
+<div class="cw"><div class="cb">cd "$(find ~ -type d -name src | head -1)"</div><button class="cp" onclick="copyCmd(this,'cd "$(find ~ -type d -name src | head -1)"')">⎘</button></div>
+<p class="ce">Usa substituição de comando para entrar no primeiro <em>src</em> encontrado.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Dicas</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><div class="al al-t"><span class="aico">💡</span><span class="atxt"><strong>cd -</strong> volta para o diretório anterior — alterne entre dois locais rapidamente.</span></div><ul class="uc"><li>cd ~ → home</li><li>cd .. → subir um nível</li><li>cd ../.. → dois níveis</li><li>cd / → raiz</li></ul></div></div></article><article class="cmd-card" data-category="Operadores" data-levels="iniciante,intermediario,avancado" data-tags="ls listar arquivos ocultos permissões">
+<div class="ch"><div class="ch-l"><div class="cname">ls</div><div class="cdesc">Listar arquivos e diretórios.</div></div><div class="cbs"><span class="badge b-c">Operadores</span></div></div>
+<div class="cc"><div class="tl" id="g-ls"><button class="tab-t active" data-tab="ls-0" onclick="switchTab('ls-0','g-ls')">🟢 Básico</button><button class="tab-t " data-tab="ls-1" onclick="switchTab('ls-1','g-ls')">🔵 Médio</button><button class="tab-t " data-tab="ls-2" onclick="switchTab('ls-2','g-ls')">🟣 Avançado</button></div><div id="p-ls-0" class="tab-p active">
+<div class="cw"><div class="cb">ls</div><button class="cp" onclick="copyCmd(this,'ls')">⎘</button></div>
+<p class="ce">Lista arquivos do diretório atual.</p></div><div id="p-ls-1" class="tab-p ">
+<div class="cw"><div class="cb">ls -lah</div><button class="cp" onclick="copyCmd(this,'ls -lah')">⎘</button></div>
+<p class="ce"><em>-l</em> detalhes, <em>-a</em> ocultos, <em>-h</em> tamanhos legíveis.</p></div><div id="p-ls-2" class="tab-p ">
+<div class="cw"><div class="cb">ls -lah --sort=size | head -20</div><button class="cp" onclick="copyCmd(this,'ls -lah --sort=size | head -20')">⎘</button></div>
+<p class="ce">Ordena por tamanho e mostra os 20 maiores.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Dicas</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><div class="al al-t"><span class="aico">💡</span><span class="atxt">Alias útil: <strong>alias ll='ls -lah'</strong> no <em>~/.bashrc</em></span></div><ul class="uc"><li>ls *.log → só .log</li><li>ls -lt → por data</li><li>ls -R → recursivo</li></ul></div></div></article><article class="cmd-card" data-category="Operadores" data-levels="iniciante,intermediario,avancado" data-tags="mkdir criar pasta diretório estrutura">
+<div class="ch"><div class="ch-l"><div class="cname">mkdir</div><div class="cdesc">Criar diretórios.</div></div><div class="cbs"><span class="badge b-c">Operadores</span></div></div>
+<div class="cc"><div class="tl" id="g-mkdir"><button class="tab-t active" data-tab="mkdir-0" onclick="switchTab('mkdir-0','g-mkdir')">🟢 Básico</button><button class="tab-t " data-tab="mkdir-1" onclick="switchTab('mkdir-1','g-mkdir')">🔵 Médio</button><button class="tab-t " data-tab="mkdir-2" onclick="switchTab('mkdir-2','g-mkdir')">🟣 Avançado</button></div><div id="p-mkdir-0" class="tab-p active">
+<div class="cw"><div class="cb">mkdir minha-pasta</div><button class="cp" onclick="copyCmd(this,'mkdir minha-pasta')">⎘</button></div>
+<p class="ce">Cria uma pasta no diretório atual.</p></div><div id="p-mkdir-1" class="tab-p ">
+<div class="cw"><div class="cb">mkdir -p projeto/{src,tests,docs}</div><button class="cp" onclick="copyCmd(this,'mkdir -p projeto/{src,tests,docs}')">⎘</button></div>
+<p class="ce"><em>-p</em> cria estrutura completa com chaves de uma vez.</p></div><div id="p-mkdir-2" class="tab-p ">
+<div class="cw"><div class="cb">mkdir -p projeto/{src/{components,hooks,utils},tests/{unit,e2e},docs}</div><button class="cp" onclick="copyCmd(this,'mkdir -p projeto/{src/{components,hooks,utils},tests/{unit,e2e},docs}')">⎘</button></div>
+<p class="ce">Estrutura de projeto React completa com um único comando.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Dicas</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><div class="al al-t"><span class="aico">💡</span><span class="atxt">Combine: <strong>mkdir -p src &amp;&amp; touch src/index.js</strong></span></div></div></div></article><article class="cmd-card" data-category="Operadores" data-levels="iniciante,intermediario" data-tags="touch criar arquivo extensão timestamp">
+<div class="ch"><div class="ch-l"><div class="cname">touch</div><div class="cdesc">Criar arquivos vazios ou atualizar timestamp.</div></div><div class="cbs"><span class="badge b-c">Operadores</span></div></div>
+<div class="cc"><div class="tl" id="g-touch"><button class="tab-t active" data-tab="touch-0" onclick="switchTab('touch-0','g-touch')">🟢 Básico</button><button class="tab-t " data-tab="touch-1" onclick="switchTab('touch-1','g-touch')">🔵 Médio</button></div><div id="p-touch-0" class="tab-p active">
+<div class="cw"><div class="cb">touch arquivo.txt</div><button class="cp" onclick="copyCmd(this,'touch arquivo.txt')">⎘</button></div>
+<p class="ce">Cria arquivo vazio com a extensão desejada.</p></div><div id="p-touch-1" class="tab-p ">
+<div class="cw"><div class="cb">touch index.{html,css,js}</div><button class="cp" onclick="copyCmd(this,'touch index.{html,css,js}')">⎘</button></div>
+<p class="ce">Cria 3 arquivos de uma vez com expansão de chaves.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Observação</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><div class="al al-i"><span class="aico">ℹ️</span><span class="atxt">Se o arquivo já existir, <strong>touch</strong> apenas atualiza o timestamp — não apaga o conteúdo.</span></div></div></div></article><article class="cmd-card" data-category="Operadores" data-levels="iniciante,intermediario,avancado" data-tags="cat mostrar conteúdo arquivo concatenar">
+<div class="ch"><div class="ch-l"><div class="cname">cat</div><div class="cdesc">Exibir e concatenar conteúdo de arquivos.</div></div><div class="cbs"><span class="badge b-c">Operadores</span></div></div>
+<div class="cc"><div class="tl" id="g-cat"><button class="tab-t active" data-tab="cat-0" onclick="switchTab('cat-0','g-cat')">🟢 Básico</button><button class="tab-t " data-tab="cat-1" onclick="switchTab('cat-1','g-cat')">🔵 Médio</button><button class="tab-t " data-tab="cat-2" onclick="switchTab('cat-2','g-cat')">🟣 Avançado</button></div><div id="p-cat-0" class="tab-p active">
+<div class="cw"><div class="cb">cat arquivo.txt</div><button class="cp" onclick="copyCmd(this,'cat arquivo.txt')">⎘</button></div>
+<p class="ce">Exibe todo o conteúdo no terminal.</p></div><div id="p-cat-1" class="tab-p ">
+<div class="cw"><div class="cb">cat -n arquivo.txt</div><button class="cp" onclick="copyCmd(this,'cat -n arquivo.txt')">⎘</button></div>
+<p class="ce"><em>-n</em> numera as linhas — útil para debugar scripts.</p></div><div id="p-cat-2" class="tab-p ">
+<div class="cw"><div class="cb">cat arq1.txt arq2.txt &gt; merged.txt</div><button class="cp" onclick="copyCmd(this,'cat arq1.txt arq2.txt &gt; merged.txt')">⎘</button></div>
+<p class="ce">Concatena dois arquivos em um terceiro.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Dicas</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><div class="al al-t"><span class="aico">💡</span><span class="atxt">Para arquivos grandes, prefira <strong>less</strong> — tem scroll e busca interativa.</span></div><ul class="uc"><li>cat /etc/hosts → ver hosts</li><li>cat &gt; novo.txt → criar digitando (Ctrl+D salva)</li></ul></div></div></article><article class="cmd-card" data-category="Operadores" data-levels="iniciante,intermediario,avancado" data-tags="rm remover apagar arquivo pasta irreversível">
+<div class="ch"><div class="ch-l"><div class="cname">rm</div><div class="cdesc">Remover arquivos e diretórios permanentemente.</div></div><div class="cbs"><span class="badge b-c">Operadores</span><span class="badge b-w">⚠ Irreversível</span></div></div>
+<div class="cc"><div class="tl" id="g-rm"><button class="tab-t active" data-tab="rm-0" onclick="switchTab('rm-0','g-rm')">🟢 Básico</button><button class="tab-t " data-tab="rm-1" onclick="switchTab('rm-1','g-rm')">🔵 Médio</button><button class="tab-t " data-tab="rm-2" onclick="switchTab('rm-2','g-rm')">🟣 Avançado</button></div><div id="p-rm-0" class="tab-p active">
+<div class="cw"><div class="cb">rm arquivo.txt</div><button class="cp" onclick="copyCmd(this,'rm arquivo.txt')">⎘</button></div>
+<p class="ce">Remove arquivo — não vai para a lixeira.</p></div><div id="p-rm-1" class="tab-p ">
+<div class="cw"><div class="cb">rm -r pasta/</div><button class="cp" onclick="copyCmd(this,'rm -r pasta/')">⎘</button></div>
+<p class="ce"><em>-r</em> remove recursivamente toda a pasta.</p></div><div id="p-rm-2" class="tab-p ">
+<div class="cw"><div class="cb">find . -name "*.log" -mtime +30 -exec rm {} \;</div><button class="cp" onclick="copyCmd(this,'find . -name "*.log" -mtime +30 -exec rm {} \;')">⎘</button></div>
+<p class="ce">Remove todos os .log com mais de 30 dias automaticamente.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>⚠️ Avisos</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><div class="al al-w"><span class="aico">⚠️</span><span class="atxt"><strong>rm -rf /</strong> destrói o sistema. NUNCA execute.</span></div><div class="al al-t"><span class="aico">💡</span><span class="atxt">Use <strong>rm -i</strong> para confirmar cada remoção.</span></div></div></div></article><article class="cmd-card" data-category="Operadores" data-levels="iniciante,intermediario,avancado" data-tags="cp copiar arquivo diretório backup">
+<div class="ch"><div class="ch-l"><div class="cname">cp</div><div class="cdesc">Copiar arquivos e diretórios.</div></div><div class="cbs"><span class="badge b-c">Operadores</span></div></div>
+<div class="cc"><div class="tl" id="g-cp"><button class="tab-t active" data-tab="cp-0" onclick="switchTab('cp-0','g-cp')">🟢 Básico</button><button class="tab-t " data-tab="cp-1" onclick="switchTab('cp-1','g-cp')">🔵 Médio</button><button class="tab-t " data-tab="cp-2" onclick="switchTab('cp-2','g-cp')">🟣 Avançado</button></div><div id="p-cp-0" class="tab-p active">
+<div class="cw"><div class="cb">cp origem.txt destino.txt</div><button class="cp" onclick="copyCmd(this,'cp origem.txt destino.txt')">⎘</button></div>
+<p class="ce">Copia para outro local ou nome.</p></div><div id="p-cp-1" class="tab-p ">
+<div class="cw"><div class="cb">cp -r src/ backup/</div><button class="cp" onclick="copyCmd(this,'cp -r src/ backup/')">⎘</button></div>
+<p class="ce"><em>-r</em> copia a pasta recursivamente.</p></div><div id="p-cp-2" class="tab-p ">
+<div class="cw"><div class="cb">cp -a --backup=numbered projeto/ ~/backups/</div><button class="cp" onclick="copyCmd(this,'cp -a --backup=numbered projeto/ ~/backups/')">⎘</button></div>
+<p class="ce"><em>-a</em> preserva permissões e timestamps. <em>--backup=numbered</em> versiona cópias.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Dicas</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><div class="al al-t"><span class="aico">💡</span><span class="atxt">Para sincronização eficiente, prefira <strong>rsync</strong> — copia só o que mudou.</span></div></div></div></article><article class="cmd-card" data-category="Operadores" data-levels="iniciante,intermediario,avancado" data-tags="mv mover renomear arquivo pasta lote">
+<div class="ch"><div class="ch-l"><div class="cname">mv</div><div class="cdesc">Mover ou renomear arquivos e diretórios.</div></div><div class="cbs"><span class="badge b-c">Operadores</span></div></div>
+<div class="cc"><div class="tl" id="g-mv"><button class="tab-t active" data-tab="mv-0" onclick="switchTab('mv-0','g-mv')">🟢 Básico</button><button class="tab-t " data-tab="mv-1" onclick="switchTab('mv-1','g-mv')">🔵 Médio</button><button class="tab-t " data-tab="mv-2" onclick="switchTab('mv-2','g-mv')">🟣 Avançado</button></div><div id="p-mv-0" class="tab-p active">
+<div class="cw"><div class="cb">mv antigo.txt novo.txt</div><button class="cp" onclick="copyCmd(this,'mv antigo.txt novo.txt')">⎘</button></div>
+<p class="ce">Renomeia o arquivo na mesma pasta.</p></div><div id="p-mv-1" class="tab-p ">
+<div class="cw"><div class="cb">mv arquivo.txt ~/Downloads/</div><button class="cp" onclick="copyCmd(this,'mv arquivo.txt ~/Downloads/')">⎘</button></div>
+<p class="ce">Move para outro diretório.</p></div><div id="p-mv-2" class="tab-p ">
+<div class="cw"><div class="cb">for f in *.jpeg; do mv "$f" "${f%.jpeg}.jpg"; done</div><button class="cp" onclick="copyCmd(this,'for f in *.jpeg; do mv "$f" "${f%.jpeg}.jpg"; done')">⎘</button></div>
+<p class="ce">Renomeia em lote: converte todas as extensões .jpeg para .jpg.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Dicas</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><div class="al al-t"><span class="aico">💡</span><span class="atxt">Use <strong>mv -i</strong> para pedir confirmação quando o destino já existe.</span></div></div></div></article></div></section><section class="cat-sec" data-section="Símbolos">
+<div class="sh"><span class="si2">🔣</span><h2 class="st">Símbolos &amp; Operadores Shell</h2><span class="sc">4 cards</span></div>
+<div class="grid"><article class="cmd-card" data-category="Símbolos" data-levels="iniciante,intermediario,avancado" data-tags="pipe redirecionar encadear saída stderr">
+<div class="ch"><div class="ch-l"><div class="cname">| &gt; &gt;&gt; &amp;&amp;</div><div class="cdesc">Operadores de encadeamento e redirecionamento.</div></div><div class="cbs"><span class="badge b-c">Símbolos</span></div></div>
+<div class="cc"><div class="tl" id="g-|-&gt;-&gt;&gt;-&amp;&amp;"><button class="tab-t active" data-tab="|-&gt;-&gt;&gt;-&amp;&amp;-0" onclick="switchTab('|-&gt;-&gt;&gt;-&amp;&amp;-0','g-|-&gt;-&gt;&gt;-&amp;&amp;')">🟢 Básico</button><button class="tab-t " data-tab="|-&gt;-&gt;&gt;-&amp;&amp;-1" onclick="switchTab('|-&gt;-&gt;&gt;-&amp;&amp;-1','g-|-&gt;-&gt;&gt;-&amp;&amp;')">🔵 Médio</button><button class="tab-t " data-tab="|-&gt;-&gt;&gt;-&amp;&amp;-2" onclick="switchTab('|-&gt;-&gt;&gt;-&amp;&amp;-2','g-|-&gt;-&gt;&gt;-&amp;&amp;')">🟣 Avançado</button></div><div id="p-|-&gt;-&gt;&gt;-&amp;&amp;-0" class="tab-p active">
+<div class="cw"><div class="cb">ls | grep ".txt"</div><button class="cp" onclick="copyCmd(this,'ls | grep ".txt"')">⎘</button></div>
+<p class="ce"><em>|</em> pipe: saída do ls vira entrada do grep.</p></div><div id="p-|-&gt;-&gt;&gt;-&amp;&amp;-1" class="tab-p ">
+<div class="cw"><div class="cb">mkdir build &amp;&amp; cd build &amp;&amp; npm init -y</div><button class="cp" onclick="copyCmd(this,'mkdir build &amp;&amp; cd build &amp;&amp; npm init -y')">⎘</button></div>
+<p class="ce"><em>&amp;&amp;</em>: cada comando só executa se o anterior foi bem-sucedido.</p></div><div id="p-|-&gt;-&gt;&gt;-&amp;&amp;-2" class="tab-p ">
+<div class="cw"><div class="cb">npm test 2&gt;&amp;1 | tee test.log | grep -E 'PASS|FAIL'</div><button class="cp" onclick="copyCmd(this,'npm test 2&gt;&amp;1 | tee test.log | grep -E &#39;PASS|FAIL&#39;')">⎘</button></div>
+<p class="ce">Redireciona stderr+stdout, salva em arquivo e filtra resultado — tudo em uma linha.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Referência</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><ul class="uc"><li><kbd>|</kbd> Pipe: saída → entrada</li><li><kbd>&gt;</kbd> Redireciona (sobrescreve)</li><li><kbd>&gt;&gt;</kbd> Redireciona (append)</li><li><kbd>&amp;&amp;</kbd> Executa se anterior OK</li><li><kbd>||</kbd> Executa se anterior falhou</li><li><kbd>2&gt;&amp;1</kbd> stderr → stdout</li><li><kbd>;</kbd> Sequencial (ignora erro)</li></ul></div></div></article><article class="cmd-card" data-category="Símbolos" data-levels="iniciante,intermediario" data-tags="curinga glob asterisco wildcard padrão">
+<div class="ch"><div class="ch-l"><div class="cname">* ? [ ]</div><div class="cdesc">Curingas (glob) para correspondência de padrões.</div></div><div class="cbs"><span class="badge b-c">Símbolos</span></div></div>
+<div class="cc"><div class="tl" id="g-*-?-[-]"><button class="tab-t active" data-tab="*-?-[-]-0" onclick="switchTab('*-?-[-]-0','g-*-?-[-]')">🟢 Básico</button><button class="tab-t " data-tab="*-?-[-]-1" onclick="switchTab('*-?-[-]-1','g-*-?-[-]')">🔵 Médio</button></div><div id="p-*-?-[-]-0" class="tab-p active">
+<div class="cw"><div class="cb">ls *.txt</div><button class="cp" onclick="copyCmd(this,'ls *.txt')">⎘</button></div>
+<p class="ce"><em>*</em> corresponde a qualquer sequência de caracteres.</p></div><div id="p-*-?-[-]-1" class="tab-p ">
+<div class="cw"><div class="cb">ls arquivo[1-3].txt</div><button class="cp" onclick="copyCmd(this,'ls arquivo[1-3].txt')">⎘</button></div>
+<p class="ce"><em>[1-3]</em> corresponde a um caractere no intervalo.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Tabela de curingas</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><ul class="uc"><li><kbd>*</kbd> Zero ou mais chars</li><li><kbd>?</kbd> Um char qualquer</li><li><kbd>[abc]</kbd> Um dos listados</li><li><kbd>[a-z]</kbd> Intervalo</li><li><kbd>[!abc]</kbd> Nenhum dos listados</li></ul></div></div></article><article class="cmd-card" data-category="Símbolos" data-levels="iniciante,intermediario" data-tags="variáveis ambiente HOME PATH USER export">
+<div class="ch"><div class="ch-l"><div class="cname">$ ~ . ..</div><div class="cdesc">Símbolos de caminhos e variáveis de ambiente.</div></div><div class="cbs"><span class="badge b-c">Símbolos</span></div></div>
+<div class="cc"><div class="tl" id="g-$-~-.-.."><button class="tab-t active" data-tab="$-~-.-..-0" onclick="switchTab('$-~-.-..-0','g-$-~-.-..')">🟢 Básico</button><button class="tab-t " data-tab="$-~-.-..-1" onclick="switchTab('$-~-.-..-1','g-$-~-.-..')">🔵 Médio</button></div><div id="p-$-~-.-..-0" class="tab-p active">
+<div class="cw"><div class="cb">echo $HOME</div><button class="cp" onclick="copyCmd(this,'echo $HOME')">⎘</button></div>
+<p class="ce"><em>$</em> acessa o valor de uma variável de ambiente.</p></div><div id="p-$-~-.-..-1" class="tab-p ">
+<div class="cw"><div class="cb">echo "$USER | $SHELL | $PWD"</div><button class="cp" onclick="copyCmd(this,'echo "$USER | $SHELL | $PWD"')">⎘</button></div>
+<p class="ce">Exibe variáveis de ambiente comuns de uma vez.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Referência</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><ul class="uc"><li><kbd>~</kbd> Home do usuário</li><li><kbd>.</kbd> Diretório atual</li><li><kbd>..</kbd> Diretório pai</li><li><kbd>$VAR</kbd> Valor da variável</li><li><kbd>#</kbd> Prompt root</li><li><kbd>$</kbd> Prompt usuário comum</li></ul></div></div></article><article class="cmd-card" data-category="Símbolos" data-levels="intermediario,avancado" data-tags="substituição comando subshell expansão chaves data">
+<div class="ch"><div class="ch-l"><div class="cname">$() `` {}</div><div class="cdesc">Substituição de comandos e expansão de chaves.</div></div><div class="cbs"><span class="badge b-c">Símbolos</span><span class="badge b-m">Intermediário+</span></div></div>
+<div class="cc"><div class="tl" id="g-$()-``-{}"><button class="tab-t active" data-tab="$()-``-{}-0" onclick="switchTab('$()-``-{}-0','g-$()-``-{}')">🔵 Médio</button><button class="tab-t " data-tab="$()-``-{}-1" onclick="switchTab('$()-``-{}-1','g-$()-``-{}')">🟣 Avançado</button></div><div id="p-$()-``-{}-0" class="tab-p active">
+<div class="cw"><div class="cb">echo "Data: $(date +%F)"</div><button class="cp" onclick="copyCmd(this,'echo "Data: $(date +%F)"')">⎘</button></div>
+<p class="ce"><em>$()</em> executa o comando interno e usa o resultado como string.</p></div><div id="p-$()-``-{}-1" class="tab-p ">
+<div class="cw"><div class="cb">tar -czf "backup-$(date +%Y%m%d).tar.gz" ~/projetos/</div><button class="cp" onclick="copyCmd(this,'tar -czf "backup-$(date +%Y%m%d).tar.gz" ~/projetos/')">⎘</button></div>
+<p class="ce">Backup com data automática no nome — pronto para cron.</p></div></div>
+</article></div></section><section class="cat-sec" data-section="Atalhos">
+<div class="sh"><span class="si2">⌨️</span><h2 class="st">Atalhos do Terminal</h2><span class="sc">4 cards</span></div>
+<div class="grid"><article class="cmd-card" data-category="Atalhos" data-levels="iniciante,intermediario,avancado" data-tags="ctrl atalhos teclado produtividade histórico edição">
+<div class="ch"><div class="ch-l"><div class="cname">Atalhos do Terminal</div><div class="cdesc">Combinações de teclado essenciais para produtividade.</div></div><div class="cbs"><span class="badge b-c">Atalhos</span></div></div>
+<div class="cc"><div class="tl" id="g-Atalhos-do-Terminal"><button class="tab-t active" data-tab="Atalhos-do-Terminal-0" onclick="switchTab('Atalhos-do-Terminal-0','g-Atalhos-do-Terminal')">🟢 Controle</button><button class="tab-t " data-tab="Atalhos-do-Terminal-1" onclick="switchTab('Atalhos-do-Terminal-1','g-Atalhos-do-Terminal')">🔵 Edição</button><button class="tab-t " data-tab="Atalhos-do-Terminal-2" onclick="switchTab('Atalhos-do-Terminal-2','g-Atalhos-do-Terminal')">🟣 Histórico</button></div><div id="p-Atalhos-do-Terminal-0" class="tab-p active">
+<div class="cw"><div class="cb">Ctrl+C / Ctrl+D / Ctrl+L</div><button class="cp" onclick="copyCmd(this,'Ctrl+C / Ctrl+D / Ctrl+L')">⎘</button></div>
+<p class="ce"><em>Ctrl+C</em> cancela, <em>Ctrl+D</em> encerra sessão, <em>Ctrl+L</em> limpa tela.</p></div><div id="p-Atalhos-do-Terminal-1" class="tab-p ">
+<div class="cw"><div class="cb">Ctrl+A / Ctrl+E / Ctrl+W</div><button class="cp" onclick="copyCmd(this,'Ctrl+A / Ctrl+E / Ctrl+W')">⎘</button></div>
+<p class="ce"><em>Ctrl+A</em> início da linha, <em>Ctrl+E</em> fim, <em>Ctrl+W</em> apaga última palavra.</p></div><div id="p-Atalhos-do-Terminal-2" class="tab-p ">
+<div class="cw"><div class="cb">Ctrl+R  →  busca reversa</div><button class="cp" onclick="copyCmd(this,'Ctrl+R  →  busca reversa')">⎘</button></div>
+<p class="ce"><em>Ctrl+R</em> abre busca interativa no histórico. Digite parte do comando.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Tabela completa</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><table class="pt"><tr><th>Atalho</th><th>Ação</th></tr><tr><td><kbd>Ctrl+C</kbd></td><td style="color:var(--tx-m);padding-left:.5rem">Cancela comando</td></tr><tr><td><kbd>Ctrl+D</kbd></td><td style="color:var(--tx-m);padding-left:.5rem">Encerra sessão</td></tr><tr><td><kbd>Ctrl+L</kbd></td><td style="color:var(--tx-m);padding-left:.5rem">Limpa tela</td></tr><tr><td><kbd>Ctrl+U</kbd></td><td style="color:var(--tx-m);padding-left:.5rem">Apaga até início</td></tr><tr><td><kbd>Ctrl+K</kbd></td><td style="color:var(--tx-m);padding-left:.5rem">Apaga até fim</td></tr><tr><td><kbd>Ctrl+W</kbd></td><td style="color:var(--tx-m);padding-left:.5rem">Apaga última palavra</td></tr><tr><td><kbd>Ctrl+R</kbd></td><td style="color:var(--tx-m);padding-left:.5rem">Busca no histórico</td></tr><tr><td><kbd>!!</kbd></td><td style="color:var(--tx-m);padding-left:.5rem">Repete último comando</td></tr><tr><td><kbd>Ctrl+Alt+T</kbd></td><td style="color:var(--tx-m);padding-left:.5rem">Abre novo terminal</td></tr></table></div></div></article></div></section><section class="cat-sec" data-section="Sistema">
+<div class="sh"><span class="si2">💻</span><h2 class="st">Informações do Sistema</h2><span class="sc">7 cards</span></div>
+<div class="grid"><article class="cmd-card" data-category="Sistema" data-levels="iniciante,intermediario" data-tags="data hora uptime whoami versão distro kernel">
+<div class="ch"><div class="ch-l"><div class="cname">date / uptime / whoami</div><div class="cdesc">Informações da sessão e do sistema operacional.</div></div><div class="cbs"><span class="badge b-c">Sistema</span></div></div>
+<div class="cc"><div class="tl" id="g-date---uptime---whoami"><button class="tab-t active" data-tab="date--uptime--whoami-0" onclick="switchTab('date--uptime--whoami-0','g-date---uptime---whoami')">🟢 Básico</button><button class="tab-t " data-tab="date--uptime--whoami-1" onclick="switchTab('date--uptime--whoami-1','g-date---uptime---whoami')">🔵 Médio</button></div><div id="p-date--uptime--whoami-0" class="tab-p active">
+<div class="cw"><div class="cb">date &amp;&amp; uptime &amp;&amp; whoami</div><button class="cp" onclick="copyCmd(this,'date &amp;&amp; uptime &amp;&amp; whoami')">⎘</button></div>
+<p class="ce">Data, tempo ligado e usuário logado de uma vez.</p></div><div id="p-date--uptime--whoami-1" class="tab-p ">
+<div class="cw"><div class="cb">cat /etc/*-release | grep -E '^NAME|^VERSION'</div><button class="cp" onclick="copyCmd(this,'cat /etc/*-release | grep -E &#39;^NAME|^VERSION&#39;')">⎘</button></div>
+<p class="ce">Exibe nome e versão da distro Linux.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Referência</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><ul class="uc"><li>uname -a → info completa do kernel</li><li>hostname → nome da máquina</li><li>timedatectl → fuso horário e NTP</li><li>sudo su → entrar como root</li></ul></div></div></article><article class="cmd-card" data-category="Sistema" data-levels="iniciante,intermediario,avancado" data-tags="df du free disco memória cpu hardware partição">
+<div class="ch"><div class="ch-l"><div class="cname">df / du / free / lscpu</div><div class="cdesc">Monitorar disco, memória e processador.</div></div><div class="cbs"><span class="badge b-c">Sistema</span></div></div>
+<div class="cc"><div class="tl" id="g-df---du---free---lscpu"><button class="tab-t active" data-tab="df--du--free--lscpu-0" onclick="switchTab('df--du--free--lscpu-0','g-df---du---free---lscpu')">🟢 Básico</button><button class="tab-t " data-tab="df--du--free--lscpu-1" onclick="switchTab('df--du--free--lscpu-1','g-df---du---free---lscpu')">🔵 Médio</button><button class="tab-t " data-tab="df--du--free--lscpu-2" onclick="switchTab('df--du--free--lscpu-2','g-df---du---free---lscpu')">🟣 Avançado</button></div><div id="p-df--du--free--lscpu-0" class="tab-p active">
+<div class="cw"><div class="cb">df -h</div><button class="cp" onclick="copyCmd(this,'df -h')">⎘</button></div>
+<p class="ce">Uso do disco de todas as partições em formato legível.</p></div><div id="p-df--du--free--lscpu-1" class="tab-p ">
+<div class="cw"><div class="cb">free -h &amp;&amp; df -h &amp;&amp; lscpu | grep 'CPU(s)'</div><button class="cp" onclick="copyCmd(this,'free -h &amp;&amp; df -h &amp;&amp; lscpu | grep &#39;CPU(s)&#39;')">⎘</button></div>
+<p class="ce">Resumo completo: RAM, disco e CPUs.</p></div><div id="p-df--du--free--lscpu-2" class="tab-p ">
+<div class="cw"><div class="cb">du -sh * | sort -rh | head -10</div><button class="cp" onclick="copyCmd(this,'du -sh * | sort -rh | head -10')">⎘</button></div>
+<p class="ce">Os 10 arquivos/pastas que mais ocupam espaço.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Referência</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><ul class="uc"><li>df -ih → inodes das partições</li><li>free -m → RAM em MB</li><li>vmstat 1 5 → stats a cada 1s por 5x</li><li>iotop → I/O por processo (requer root)</li></ul></div></div></article><article class="cmd-card" data-category="Sistema" data-levels="intermediario,avancado" data-tags="uname env variáveis ambiente export PATH hostname">
+<div class="ch"><div class="ch-l"><div class="cname">uname / env / export</div><div class="cdesc">Kernel, hostname e variáveis de ambiente.</div></div><div class="cbs"><span class="badge b-c">Sistema</span><span class="badge b-m">Intermediário+</span></div></div>
+<div class="cc"><div class="tl" id="g-uname---env---export"><button class="tab-t active" data-tab="uname--env--export-0" onclick="switchTab('uname--env--export-0','g-uname---env---export')">🔵 Médio</button><button class="tab-t " data-tab="uname--env--export-1" onclick="switchTab('uname--env--export-1','g-uname---env---export')">🟣 Avançado</button></div><div id="p-uname--env--export-0" class="tab-p active">
+<div class="cw"><div class="cb">uname -a</div><button class="cp" onclick="copyCmd(this,'uname -a')">⎘</button></div>
+<p class="ce">Info completa do kernel: versão, arquitetura, hostname.</p></div><div id="p-uname--env--export-1" class="tab-p ">
+<div class="cw"><div class="cb">env | sort | grep -v '^_'</div><button class="cp" onclick="copyCmd(this,'env | sort | grep -v &#39;^_&#39;')">⎘</button></div>
+<p class="ce">Lista todas as variáveis de ambiente em ordem alfabética.</p></div></div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Dicas</span><span class="aic">▾</span></button><div class="abody"><div class="ain"><div class="al al-t"><span class="aico">💡</span><span class="atxt">Use <strong>export VAR=valor</strong> para definir variáveis para a sessão. Para persistir, adicione ao <em>~/.bashrc</em>.</span></div></div></div></article></div></section><section class="cat-sec" data-section="Navegação">
+<div class="sh"><span class="si2">🧭</span><h2 class="st">Navegação</h2><span class="sc">6 cards</span></div>
+<div class="grid">
 
-    <main class="container mx-auto px-4 mt-8">
-        <!-- Hero Section -->
-        <section class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4">Biblioteca Definitiva Linux</h2>
-            <p class="text-slate-400 max-w-3xl mx-auto mb-6">Comandos essenciais com exemplos práticos, explicações detalhadas e frameworks de engenharia de prompts para dominar o terminal.</p>
-            
-            <!-- Framework Info -->
-            <div class="inline-flex flex-wrap gap-2 justify-center">
-                <span class="framework-badge framework-clear">CLEAR</span>
-                <span class="framework-badge framework-costar">CO-STAR</span>
-                <span class="framework-badge framework-crispe">CRISPE</span>
-            </div>
-        </section>
+<article class="cmd-card" data-category="Navegação" data-levels="iniciante,intermediario,avancado" data-tags="cd pwd ls navegar path diretório">
+<div class="ch"><div class="ch-l"><div class="cname">Navegação Básica</div><div class="cdesc">pwd, cd e os caminhos principais.</div></div><div class="cbs"><span class="badge b-c">Navegação</span></div></div>
+<div class="cc"><div class="tl" id="g-nav">
+<button class="tab-t active" data-tab="nav0" onclick="switchTab('nav0','g-nav')">🟢 Básico</button>
+<button class="tab-t" data-tab="nav1" onclick="switchTab('nav1','g-nav')">🔵 Médio</button>
+<button class="tab-t" data-tab="nav2" onclick="switchTab('nav2','g-nav')">🟣 Avançado</button>
+</div>
+<div id="p-nav0" class="tab-p active"><div class="cw"><div class="cb">pwd</div><button class="cp" onclick="copyCmd(this,'pwd')">⎘</button></div><p class="ce">Mostra o caminho completo do diretório atual.</p></div>
+<div id="p-nav1" class="tab-p"><div class="cw"><div class="cb">cd ~/projetos && ls -lah</div><button class="cp" onclick="copyCmd(this,'cd ~/projetos && ls -lah')">⎘</button></div><p class="ce">Navega e lista em uma linha. <em>~</em> = home.</p></div>
+<div id="p-nav2" class="tab-p"><div class="cw"><div class="cb">alias ..='cd ..' && alias ...='cd ../..'</div><button class="cp" onclick="copyCmd(this,&quot;alias ..='cd ..' && alias ...='cd ../..'&quot;)">⎘</button></div><p class="ce">Aliases para navegação rápida. Adicione ao <em>~/.bashrc</em>.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Dicas</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><ul class="uc"><li>cd ~ → home</li><li>cd - → diretório anterior</li><li>cd / → raiz</li><li>cd ../.. → dois níveis acima</li></ul></div></div>
+</article>
 
-        <!-- Categories -->
-        <div id="categories" class="flex flex-wrap justify-center gap-2 mb-12">
-            <!-- Categories will be injected here -->
-        </div>
+<article class="cmd-card" data-category="Navegação" data-levels="iniciante,intermediario" data-tags="mkdir rmdir criar remover pasta vazia">
+<div class="ch"><div class="ch-l"><div class="cname">mkdir / rmdir</div><div class="cdesc">Criar e remover diretórios.</div></div><div class="cbs"><span class="badge b-c">Navegação</span></div></div>
+<div class="cc"><div class="tl" id="g-mkrm">
+<button class="tab-t active" data-tab="mkrm0" onclick="switchTab('mkrm0','g-mkrm')">🟢 Básico</button>
+<button class="tab-t" data-tab="mkrm1" onclick="switchTab('mkrm1','g-mkrm')">🔵 Médio</button>
+</div>
+<div id="p-mkrm0" class="tab-p active"><div class="cw"><div class="cb">mkdir nova-pasta</div><button class="cp" onclick="copyCmd(this,'mkdir nova-pasta')">⎘</button></div><p class="ce">Cria pasta no diretório atual.</p></div>
+<div id="p-mkrm1" class="tab-p"><div class="cw"><div class="cb">rmdir -p projeto/src/components</div><button class="cp" onclick="copyCmd(this,'rmdir -p projeto/src/components')">⎘</button></div><p class="ce"><em>rmdir -p</em> remove estrutura vazia completa. Use <em>rm -r</em> se tiver conteúdo.</p></div>
+</div>
+</article>
 
-        <!-- Commands Grid -->
-        <div id="commands-grid" class="space-y-6">
-            <!-- Commands will be injected here -->
-        </div>
-    </main>
+</div></section>
+<section class="cat-sec" data-section="Arquivos">
+<div class="sh"><span class="si2">📄</span><h2 class="st">Manipulação de Arquivos</h2><span class="sc">8 cards</span></div>
+<div class="grid">
 
-    <!-- Footer -->
-    <footer class="mt-20 border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
-        <p>Desenvolvido por <a href="https://github.com/gabrielfcoelh83" class="text-emerald-500 hover:underline">Gabriel Coelho</a></p>
-        <p class="mt-2">LinuxLib Pro • 2026 • Aplicando Engenharia de Prompts</p>
-    </footer>
+<article class="cmd-card" data-category="Arquivos" data-levels="iniciante,intermediario,avancado" data-tags="mv cp renomear mover copiar arquivo pasta">
+<div class="ch"><div class="ch-l"><div class="cname">mv / cp</div><div class="cdesc">Mover, renomear e copiar arquivos.</div></div><div class="cbs"><span class="badge b-c">Arquivos</span></div></div>
+<div class="cc"><div class="tl" id="g-mvcp">
+<button class="tab-t active" data-tab="mvcp0" onclick="switchTab('mvcp0','g-mvcp')">🟢 Básico</button>
+<button class="tab-t" data-tab="mvcp1" onclick="switchTab('mvcp1','g-mvcp')">🔵 Médio</button>
+<button class="tab-t" data-tab="mvcp2" onclick="switchTab('mvcp2','g-mvcp')">🟣 Avançado</button>
+</div>
+<div id="p-mvcp0" class="tab-p active"><div class="cw"><div class="cb">mv antigo.txt novo.txt</div><button class="cp" onclick="copyCmd(this,'mv antigo.txt novo.txt')">⎘</button></div><p class="ce">Renomeia o arquivo na mesma pasta.</p></div>
+<div id="p-mvcp1" class="tab-p"><div class="cw"><div class="cb">cp -r src/ backup/</div><button class="cp" onclick="copyCmd(this,'cp -r src/ backup/')">⎘</button></div><p class="ce"><em>-r</em> copia pasta recursivamente.</p></div>
+<div id="p-mvcp2" class="tab-p"><div class="cw"><div class="cb">for f in *.jpeg; do mv "$f" "${f%.jpeg}.jpg"; done</div><button class="cp" onclick="copyCmd(this,'for f in *.jpeg; do mv &quot;$f&quot; &quot;${f%.jpeg}.jpg&quot;; done')">⎘</button></div><p class="ce">Renomeia em lote: converte extensão .jpeg para .jpg.</p></div>
+</div>
+</article>
 
-    <script>
-        const commands = [
-            {
-                id: "grep-1",
-                name: "grep",
-                category: "Busca",
-                shortDesc: "Busca padrões em arquivos",
-                frameworks: ["CLEAR", "CO-STAR"],
-                // Aplicando CLEAR: Conciso, Lógico, Explícito
-                description: "grep busca por padrões de texto (usando regex) em arquivos. É essencial para filtrar logs, encontrar configurações e validar dados.",
-                role: "Desenvolvedor ou DevOps analisando logs",
-                objective: "Encontrar linhas específicas em arquivos grandes",
-                examples: [
-                    {
-                        level: "Básico",
-                        command: "grep 'erro' arquivo.log",
-                        explanation: "Busca a palavra 'erro' no arquivo.log e exibe as linhas encontradas."
-                    },
-                    {
-                        level: "Intermediário",
-                        command: "grep -rn 'palavra' /home/user/projetos",
-                        explanation: "Busca recursivamente (-r) em todos os arquivos da pasta, mostrando o número da linha (-n) onde 'palavra' aparece."
-                    },
-                    {
-                        level: "Avançado",
-                        command: "grep -E '^[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}' ips.txt",
-                        explanation: "Usa regex estendida (-E) para encontrar linhas que começam com IPs válidos (padrão: 192.168.1.1)."
-                    }
-                ],
-                useCases: [
-                    "Filtrar erros em logs: grep 'ERROR' app.log | wc -l",
-                    "Encontrar padrões com contexto: grep -C 3 'palavra' arquivo.txt",
-                    "Buscar case-insensitive: grep -i 'ERRO' arquivo.log"
-                ],
-                tips: [
-                    "Use -i para ignorar maiúsculas/minúsculas",
-                    "Use -v para inverter a busca (tudo que NÃO corresponde)",
-                    "Combine com pipe (|) para processamento em cadeia"
-                ],
-                warnings: [
-                    "Em arquivos muito grandes, grep pode ser lento. Considere usar estruturas de dados indexadas.",
-                    "Regex complexas podem ter problemas de performance"
-                ]
-            },
+<article class="cmd-card" data-category="Arquivos" data-levels="iniciante,intermediario,avancado" data-tags="head tail less tac visualizar conteúdo paginação logs tempo real">
+<div class="ch"><div class="ch-l"><div class="cname">head / tail / less</div><div class="cdesc">Visualizar partes de arquivos e logs.</div></div><div class="cbs"><span class="badge b-c">Arquivos</span></div></div>
+<div class="cc"><div class="tl" id="g-view">
+<button class="tab-t active" data-tab="view0" onclick="switchTab('view0','g-view')">🟢 Básico</button>
+<button class="tab-t" data-tab="view1" onclick="switchTab('view1','g-view')">🔵 Médio</button>
+<button class="tab-t" data-tab="view2" onclick="switchTab('view2','g-view')">🟣 Avançado</button>
+</div>
+<div id="p-view0" class="tab-p active"><div class="cw"><div class="cb">tail -f /var/log/syslog</div><button class="cp" onclick="copyCmd(this,'tail -f /var/log/syslog')">⎘</button></div><p class="ce"><em>-f</em> segue o arquivo em tempo real. Essencial para logs.</p></div>
+<div id="p-view1" class="tab-p"><div class="cw"><div class="cb">tail -n 100 app.log | grep "ERROR"</div><button class="cp" onclick="copyCmd(this,'tail -n 100 app.log | grep &quot;ERROR&quot;')">⎘</button></div><p class="ce">Últimas 100 linhas filtradas por erros.</p></div>
+<div id="p-view2" class="tab-p"><div class="cw"><div class="cb">tail -f app.log | grep --line-buffered "ERROR" | tee erros.log</div><button class="cp" onclick="copyCmd(this,'tail -f app.log | grep --line-buffered &quot;ERROR&quot; | tee erros.log')">⎘</button></div><p class="ce">Monitora em tempo real, filtra e salva simultaneamente.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Dicas</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><ul class="uc"><li>head -20 arquivo → primeiras 20 linhas</li><li>less arquivo → paginação interativa (q para sair)</li><li>tac arquivo → exibe em ordem inversa</li><li>xxd -b arquivo → exibe em binário</li></ul></div></div>
+</article>
 
-            {
-                id: "find-1",
-                name: "find",
-                category: "Sistema",
-                shortDesc: "Procura arquivos e diretórios",
-                frameworks: ["CLEAR", "CO-STAR"],
-                description: "find localiza arquivos/diretórios com critérios: nome, tamanho, data, permissões, etc. Mais potente que ls.",
-                role: "Administrador de sistema",
-                objective: "Encontrar arquivos específicos em diretórios grandes",
-                examples: [
-                    {
-                        level: "Básico",
-                        command: "find /home -name '*.pdf'",
-                        explanation: "Encontra todos os arquivos PDF no diretório /home e seus subdiretórios."
-                    },
-                    {
-                        level: "Intermediário",
-                        command: "find /var/log -name '*.log' -mtime -7",
-                        explanation: "Encontra logs modificados nos últimos 7 dias (-mtime -7)."
-                    },
-                    {
-                        level: "Avançado",
-                        command: "find . -type f -size +100M -exec du -h {} \\; | sort -rh",
-                        explanation: "Encontra arquivos maiores que 100MB, executa du em cada um e ordena por tamanho."
-                    }
-                ],
-                useCases: [
-                    "Limpar arquivos antigos: find /tmp -type f -mtime +30 -delete",
-                    "Encontrar arquivos grandes: find . -type f -size +1G",
-                    "Buscar por permissões: find . -perm 644 -type f"
-                ],
-                tips: [
-                    "Use -type para filtrar: f (arquivo), d (diretório), l (link simbólico)",
-                    "Use -exec para executar comandos nos resultados",
-                    "-empty encontra arquivos/dirs vazios"
-                ],
-                warnings: [
-                    "find em diretórios raiz (/) pode ser muito lento",
-                    "-delete é irreversível! Teste antes com -ls"
-                ]
-            },
+<article class="cmd-card" data-category="Arquivos" data-levels="iniciante,intermediario,avancado" data-tags="tar gzip compactar descompactar backup gz bz2">
+<div class="ch"><div class="ch-l"><div class="cname">tar</div><div class="cdesc">Compactar e descompactar arquivos.</div></div><div class="cbs"><span class="badge b-c">Arquivos</span></div></div>
+<div class="cc"><div class="tl" id="g-tar">
+<button class="tab-t active" data-tab="tar0" onclick="switchTab('tar0','g-tar')">🟢 Básico</button>
+<button class="tab-t" data-tab="tar1" onclick="switchTab('tar1','g-tar')">🔵 Médio</button>
+<button class="tab-t" data-tab="tar2" onclick="switchTab('tar2','g-tar')">🟣 Avançado</button>
+</div>
+<div id="p-tar0" class="tab-p active"><div class="cw"><div class="cb">tar -xzf arquivo.tar.gz</div><button class="cp" onclick="copyCmd(this,'tar -xzf arquivo.tar.gz')">⎘</button></div><p class="ce">Extrai .tar.gz no diretório atual.</p></div>
+<div id="p-tar1" class="tab-p"><div class="cw"><div class="cb">tar -czf backup.tar.gz --exclude=node_modules projeto/</div><button class="cp" onclick="copyCmd(this,'tar -czf backup.tar.gz --exclude=node_modules projeto/')">⎘</button></div><p class="ce">Cria backup excluindo node_modules.</p></div>
+<div id="p-tar2" class="tab-p"><div class="cw"><div class="cb">tar -czf "backup-$(date +%Y%m%d).tar.gz" ~/projetos/</div><button class="cp" onclick="copyCmd(this,'tar -czf &quot;backup-$(date +%Y%m%d).tar.gz&quot; ~/projetos/')">⎘</button></div><p class="ce">Backup com data automática no nome — pronto para cron.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Flags essenciais</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><ul class="uc"><li><kbd>c</kbd> criar | <kbd>x</kbd> extrair | <kbd>t</kbd> listar</li><li><kbd>z</kbd> gzip | <kbd>j</kbd> bzip2 | <kbd>f</kbd> arquivo</li><li>tar -tzf arquivo.tar.gz → listar sem extrair</li></ul></div></div>
+</article>
 
-            {
-                id: "ssh-1",
-                name: "ssh",
-                category: "Rede",
-                shortDesc: "Conexão segura a servidores",
-                frameworks: ["CRISPE"],
-                description: "ssh (Secure Shell) estabelece conexões criptografadas a servidores remotos para execução de comandos ou acesso interativo.",
-                role: "DevOps/SysAdmin gerenciando servidores",
-                objective: "Conectar e gerenciar servidores remotamente",
-                examples: [
-                    {
-                        level: "Básico",
-                        command: "ssh user@example.com",
-                        explanation: "Conecta ao servidor example.com com o usuário 'user' (usa senha)."
-                    },
-                    {
-                        level: "Intermediário",
-                        command: "ssh -i ~/.ssh/id_rsa -p 2222 admin@server.com",
-                        explanation: "Conecta usando chave privada (-i), porta customizada (-p 2222)."
-                    },
-                    {
-                        level: "Avançado",
-                        command: "ssh -L 8080:localhost:3000 user@server.com",
-                        explanation: "Tunnel: encaminha porta local 8080 para porta 3000 do servidor remoto (útil para acessar services internos)."
-                    }
-                ],
-                useCases: [
-                    "Executar comando remoto: ssh user@host 'ls -la'",
-                    "Copiar arquivos: scp arquivo.txt user@host:/home/user/",
-                    "Monitorar servidor: ssh user@host 'tail -f /var/log/app.log'"
-                ],
-                tips: [
-                    "Configure ~/.ssh/config para atalhos",
-                    "Use ssh-keygen -t ed25519 para chaves modernas",
-                    "ssh-agent armazena chaves para não digitar senha"
-                ],
-                warnings: [
-                    "Nunca compartilhe suas chaves privadas",
-                    "Desabilite acesso por senha em produção (PermitRootLogin no, PasswordAuthentication no)"
-                ]
-            },
+</div></section>
+<section class="cat-sec" data-section="Busca">
+<div class="sh"><span class="si2">🔍</span><h2 class="st">Busca &amp; Pesquisa</h2><span class="sc">7 cards</span></div>
+<div class="grid">
 
-            {
-                id: "docker-1",
-                name: "docker",
-                category: "Containers",
-                shortDesc: "Gerencia containers",
-                frameworks: ["CLEAR", "CRISPE"],
-                description: "docker cria, executa e gerencia containers — ambientes isolados com aplicações e dependências embutidas.",
-                role: "DevOps/Desenvolvedor",
-                objective: "Containerizar e orquestrar aplicações",
-                examples: [
-                    {
-                        level: "Básico",
-                        command: "docker ps",
-                        explanation: "Lista containers em execução."
-                    },
-                    {
-                        level: "Intermediário",
-                        command: "docker run -d -p 8080:3000 -e NODE_ENV=production minha-app:latest",
-                        explanation: "Executa container em background (-d), mapeia porta 8080 → 3000, define variável de ambiente."
-                    },
-                    {
-                        level: "Avançado",
-                        command: "docker build -t minha-app:v1.0 --build-arg VERSION=1.0 .",
-                        explanation: "Constrói imagem com tag, passando argumentos de build para o Dockerfile."
-                    }
-                ],
-                useCases: [
-                    "Remover containers parados: docker container prune",
-                    "Ver logs em tempo real: docker logs -f <container-id>",
-                    "Executar shell no container: docker exec -it <container-id> /bin/bash"
-                ],
-                tips: [
-                    "Use .dockerignore como .gitignore",
-                    "Multi-stage builds reduzem tamanho de imagens",
-                    "Use docker-compose para orquestrar múltiplos containers"
-                ],
-                warnings: [
-                    "Containers são efêmeros — dados devem ser em volumes",
-                    "Root no container = risco de segurança. Use USER no Dockerfile"
-                ]
-            },
+<article class="cmd-card" data-category="Busca" data-levels="iniciante,intermediario,avancado" data-tags="grep buscar padrão regex texto log recursivo">
+<div class="ch"><div class="ch-l"><div class="cname">grep</div><div class="cdesc">Buscar padrões de texto com expressões regulares.</div></div><div class="cbs"><span class="badge b-c">Busca</span></div></div>
+<div class="cc"><div class="tl" id="g-grep">
+<button class="tab-t active" data-tab="grep0" onclick="switchTab('grep0','g-grep')">🟢 Básico</button>
+<button class="tab-t" data-tab="grep1" onclick="switchTab('grep1','g-grep')">🔵 Médio</button>
+<button class="tab-t" data-tab="grep2" onclick="switchTab('grep2','g-grep')">🟣 Avançado</button>
+</div>
+<div id="p-grep0" class="tab-p active"><div class="cw"><div class="cb">grep "erro" arquivo.log</div><button class="cp" onclick="copyCmd(this,'grep &quot;erro&quot; arquivo.log')">⎘</button></div><p class="ce">Busca a palavra e exibe as linhas encontradas.</p></div>
+<div id="p-grep1" class="tab-p"><div class="cw"><div class="cb">grep -rni "TODO" ./src</div><button class="cp" onclick="copyCmd(this,'grep -rni &quot;TODO&quot; ./src')">⎘</button></div><p class="ce"><em>-r</em> recursivo, <em>-n</em> número de linha, <em>-i</em> case-insensitive.</p></div>
+<div id="p-grep2" class="tab-p"><div class="cw"><div class="cb">grep -E "^[0-9]{4}-[0-9]{2}-[0-9]{2}" app.log | tail -50</div><button class="cp" onclick="copyCmd(this,'grep -E &quot;^[0-9]{4}-[0-9]{2}-[0-9]{2}&quot; app.log | tail -50')">⎘</button></div><p class="ce">Regex estendida <em>-E</em>: encontra entradas de log com data ISO.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Flags mais usados</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><ul class="uc"><li><kbd>-v</kbd> Inverte: linhas que NÃO batem</li><li><kbd>-c</kbd> Conta linhas com match</li><li><kbd>-l</kbd> Só nomes dos arquivos</li><li><kbd>-C 3</kbd> 3 linhas de contexto</li><li><kbd>-w</kbd> Palavra inteira</li></ul></div></div>
+</article>
 
-            {
-                id: "chmod-1",
-                name: "chmod",
-                category: "Permissões",
-                shortDesc: "Altera permissões de arquivos",
-                frameworks: ["CLEAR"],
-                description: "chmod (change mode) altera permissões (r=read, w=write, x=execute) de arquivos para usuário, grupo e outros.",
-                role: "Administrador de sistema",
-                objective: "Controlar acesso a arquivos e diretórios",
-                examples: [
-                    {
-                        level: "Básico",
-                        command: "chmod 755 script.sh",
-                        explanation: "755 = owner:rwx (7), group:r-x (5), other:r-x (5). Arquivo executável para todos."
-                    },
-                    {
-                        level: "Intermediário",
-                        command: "chmod u+x script.sh",
-                        explanation: "Adiciona permissão de execução (x) para o owner (u). Sintaxe simbólica."
-                    },
-                    {
-                        level: "Avançado",
-                        command: "chmod -R 700 ~/private && chmod g+rx ~/public",
-                        explanation: "Recursivamente (-R): pasta privada só para owner. Depois, adiciona leitura/exec para o grupo em public."
-                    }
-                ],
-                useCases: [
-                    "Arquivo sensível (SSH keys): chmod 600 ~/.ssh/id_rsa",
-                    "Diretório compartilhado: chmod 775 /shared/project",
-                    "Revogando write: chmod a-w importante.txt"
-                ],
-                tips: [
-                    "Memorize: 4=read, 2=write, 1=execute. 7=read+write+execute",
-                    "ls -l mostra permissões atuais",
-                    "-R aplica recursivamente"
-                ],
-                warnings: [
-                    "chmod 777 é inseguro — evite permissões muito abertas",
-                    "Trocar permissões de /etc, /root ou /bin sem cuidado pode quebrar o sistema"
-                ]
-            },
+<article class="cmd-card" data-category="Busca" data-levels="iniciante,intermediario,avancado" data-tags="find procurar arquivo diretório tamanho data tipo exec">
+<div class="ch"><div class="ch-l"><div class="cname">find</div><div class="cdesc">Localizar arquivos com critérios avançados.</div></div><div class="cbs"><span class="badge b-c">Busca</span></div></div>
+<div class="cc"><div class="tl" id="g-find">
+<button class="tab-t active" data-tab="find0" onclick="switchTab('find0','g-find')">🟢 Básico</button>
+<button class="tab-t" data-tab="find1" onclick="switchTab('find1','g-find')">🔵 Médio</button>
+<button class="tab-t" data-tab="find2" onclick="switchTab('find2','g-find')">🟣 Avançado</button>
+</div>
+<div id="p-find0" class="tab-p active"><div class="cw"><div class="cb">find . -name "*.pdf"</div><button class="cp" onclick="copyCmd(this,'find . -name &quot;*.pdf&quot;')">⎘</button></div><p class="ce">Localiza todos os PDFs a partir do diretório atual.</p></div>
+<div id="p-find1" class="tab-p"><div class="cw"><div class="cb">find /var/log -name "*.log" -mtime -7 -size +1M</div><button class="cp" onclick="copyCmd(this,'find /var/log -name &quot;*.log&quot; -mtime -7 -size +1M')">⎘</button></div><p class="ce">Logs maiores que 1MB modificados nos últimos 7 dias.</p></div>
+<div id="p-find2" class="tab-p"><div class="cw"><div class="cb">find . -type f -name "*.js" -exec grep -l "console.log" {} \;</div><button class="cp" onclick="copyCmd(this,'find . -type f -name &quot;*.js&quot; -exec grep -l &quot;console.log&quot; {} \\;')">⎘</button></div><p class="ce">Arquivos JS que contêm console.log — útil antes de abrir PR.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>⚠️ Atenção</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><div class="al al-w"><span class="aico">⚠️</span><span class="atxt"><strong>-delete</strong> é irreversível. Teste sempre com <strong>-ls</strong> antes.</span></div><ul class="uc"><li>-type f → apenas arquivos</li><li>-type d → apenas diretórios</li><li>-maxdepth 2 → limitar profundidade</li></ul></div></div>
+</article>
 
-            {
-                id: "systemctl-1",
-                name: "systemctl",
-                category: "Sistema",
-                shortDesc: "Controla serviços systemd",
-                frameworks: ["CO-STAR"],
-                description: "systemctl gerencia serviços, sockets e targets do systemd — init system moderno do Linux.",
-                role: "DevOps/SysAdmin",
-                objective: "Iniciar, parar e monitorar serviços",
-                examples: [
-                    {
-                        level: "Básico",
-                        command: "systemctl status nginx",
-                        explanation: "Mostra status do serviço nginx (ativo, inativo, com erro)."
-                    },
-                    {
-                        level: "Intermediário",
-                        command: "systemctl start nginx && systemctl enable nginx",
-                        explanation: "Inicia o serviço E o habilita para iniciar automaticamente no boot."
-                    },
-                    {
-                        level: "Avançado",
-                        command: "systemctl restart nginx || systemctl status nginx && journalctl -u nginx -n 50",
-                        explanation: "Tenta reiniciar; se falhar, mostra status e os últimos 50 logs do serviço."
-                    }
-                ],
-                useCases: [
-                    "Ver logs em tempo real: journalctl -u nginx -f",
-                    "Habilitar/desabilitar na boot: systemctl enable/disable apache2",
-                    "Recarregar configuração: systemctl reload postgresql"
-                ],
-                tips: [
-                    "systemctl list-units mostra todos os serviços",
-                    "journalctl é mais poderoso que logs tradicionais",
-                    "use --no-pager para evitar paginação"
-                ],
-                warnings: [
-                    "Reiniciar serviços pode interromper conexões ativas",
-                    "Desabilitar um serviço crítico pode impedir boot"
-                ]
-            },
+</div></section>
 
-            {
-                id: "tar-1",
-                name: "tar",
-                category: "Arquivos",
-                shortDesc: "Compacta/descompacta arquivos",
-                frameworks: ["CLEAR"],
-                description: "tar agrupa arquivos em um único arquivo (tarball), frequentemente compactado com gzip (.gz) ou bzip2 (.bz2).",
-                role: "Qualquer desenvolvedor/sysadmin",
-                objective: "Comprimir e descomprimir arquivos para backup ou distribuição",
-                examples: [
-                    {
-                        level: "Básico",
-                        command: "tar -xzf arquivo.tar.gz",
-                        explanation: "Extrai (-x) um tarball compactado em gzip (-z) do arquivo.tar.gz (-f)."
-                    },
-                    {
-                        level: "Intermediário",
-                        command: "tar -czf backup.tar.gz ~/projeto/ --exclude='node_modules'",
-                        explanation: "Cria (-c) tarball compactado (-z) excluindo node_modules para economizar espaço."
-                    },
-                    {
-                        level: "Avançado",
-                        command: "tar -xzf arquivo.tar.gz -C /destino/ --strip-components=1",
-                        explanation: "Extrai em /destino/, removendo o primeiro nível de diretório (útil quando tarball tem wrapper dir)."
-                    }
-                ],
-                useCases: [
-                    "Listar conteúdo: tar -tzf arquivo.tar.gz",
-                    "Backup incremental: tar -czf backup.tar.gz -g snap.file ~",
-                    "Comparar com original: tar -tzf backup.tar.gz | sort > lista.txt"
-                ],
-                tips: [
-                    "Memorize: c=create, x=extract, t=test (listar), z=gzip, j=bzip2, f=file",
-                    "-v (verbose) mostra progresso",
-                    "tar é mais eficiente que zip para compressão em Linux"
-                ],
-                warnings: [
-                    "Extrair em diretório errado pode bagunçar o sistema",
-                    "Tarballs com path absoluto (/) podem sobrescrever arquivos críticos"
-                ]
-            }
-        ];
+<section class="cat-sec" data-section="Pacotes">
+<div class="sh"><span class="si2">📦</span><h2 class="st">Gerenciador de Pacotes</h2><span class="sc">6 cards</span></div>
+<div class="grid">
 
-        const categories = [
-            { id: "all", name: "Todos" },
-            { id: "Sistema", name: "Sistema" },
-            { id: "Busca", name: "Busca" },
-            { id: "Arquivos", name: "Arquivos" },
-            { id: "Rede", name: "Rede" },
-            { id: "Containers", name: "Containers" },
-            { id: "Permissões", name: "Permissões" }
-        ];
+<article class="cmd-card" data-category="Pacotes" data-levels="iniciante,intermediario,avancado" data-tags="apt-get update upgrade install remove pacote software">
+<div class="ch"><div class="ch-l"><div class="cname">apt-get</div><div class="cdesc">Gerenciar pacotes em distribuições Debian/Ubuntu.</div></div><div class="cbs"><span class="badge b-c">Pacotes</span></div></div>
+<div class="cc"><div class="tl" id="g-apt">
+<button class="tab-t active" data-tab="apt0" onclick="switchTab('apt0','g-apt')">🟢 Básico</button>
+<button class="tab-t" data-tab="apt1" onclick="switchTab('apt1','g-apt')">🔵 Médio</button>
+<button class="tab-t" data-tab="apt2" onclick="switchTab('apt2','g-apt')">🟣 Avançado</button>
+</div>
+<div id="p-apt0" class="tab-p active"><div class="cw"><div class="cb">sudo apt-get update && sudo apt-get install git</div><button class="cp" onclick="copyCmd(this,'sudo apt-get update && sudo apt-get install git')">⎘</button></div><p class="ce">Atualiza a lista e instala o git.</p></div>
+<div id="p-apt1" class="tab-p"><div class="cw"><div class="cb">sudo apt-get update && sudo apt-get upgrade -y</div><button class="cp" onclick="copyCmd(this,'sudo apt-get update && sudo apt-get upgrade -y')">⎘</button></div><p class="ce">Atualiza todo o sistema sem confirmação por pacote.</p></div>
+<div id="p-apt2" class="tab-p"><div class="cw"><div class="cb">sudo apt-get autoremove --purge && sudo apt-get autoclean</div><button class="cp" onclick="copyCmd(this,'sudo apt-get autoremove --purge && sudo apt-get autoclean')">⎘</button></div><p class="ce">Remove pacotes órfãos e limpa o cache — libera espaço.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Referência</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><ul class="uc"><li>apt-cache search &lt;prog&gt; → pesquisar no repositório</li><li>apt-get remove &lt;prog&gt; → remover (mantém config)</li><li>apt-get purge &lt;prog&gt; → remover + configs</li><li>dpkg -l | grep &lt;prog&gt; → verificar instalado</li></ul></div></div>
+</article>
 
-        let activeCategory = "all";
-        let searchQuery = "";
+<article class="cmd-card" data-category="Pacotes" data-levels="intermediario,avancado" data-tags="dpkg deb wget download instalar pacote local">
+<div class="ch"><div class="ch-l"><div class="cname">dpkg / wget</div><div class="cdesc">Instalar pacotes .deb baixados manualmente.</div></div><div class="cbs"><span class="badge b-c">Pacotes</span><span class="badge b-m">Intermediário+</span></div></div>
+<div class="cc"><div class="tl" id="g-dpkg">
+<button class="tab-t active" data-tab="dpkg0" onclick="switchTab('dpkg0','g-dpkg')">🔵 Médio</button>
+<button class="tab-t" data-tab="dpkg1" onclick="switchTab('dpkg1','g-dpkg')">🟣 Avançado</button>
+</div>
+<div id="p-dpkg0" class="tab-p active"><div class="cw"><div class="cb">wget https://site.com/app.deb && sudo dpkg -i app.deb</div><button class="cp" onclick="copyCmd(this,'wget https://site.com/app.deb && sudo dpkg -i app.deb')">⎘</button></div><p class="ce">Baixa e instala .deb em sequência.</p></div>
+<div id="p-dpkg1" class="tab-p"><div class="cw"><div class="cb">sudo dpkg -i app.deb; sudo apt-get install -f -y</div><button class="cp" onclick="copyCmd(this,'sudo dpkg -i app.deb; sudo apt-get install -f -y')">⎘</button></div><p class="ce"><em>-f</em> (fix-broken) resolve dependências faltantes automaticamente.</p></div>
+</div>
+</article>
 
-        function renderCategories() {
-            const container = document.getElementById('categories');
-            container.innerHTML = categories.map(cat => `
-                <button onclick="setCategory('${cat.id}')" 
-                    class="category-btn px-4 py-2 rounded-full text-sm font-medium border border-slate-700 hover:border-emerald-500 transition-colors ${activeCategory === cat.id ? 'active' : 'bg-slate-800 text-slate-300'}">
-                    ${cat.name}
-                </button>
-            `).join('');
-        }
+</div></section>
+<section class="cat-sec" data-section="Usuários">
+<div class="sh"><span class="si2">👤</span><h2 class="st">Usuários &amp; Grupos</h2><span class="sc">6 cards</span></div>
+<div class="grid">
 
-        function renderCommands() {
-            const grid = document.getElementById('commands-grid');
-            const filtered = commands.filter(cmd => {
-                const matchesCat = activeCategory === "all" || cmd.category === activeCategory;
-                const matchesSearch = cmd.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                    cmd.description.toLowerCase().includes(searchQuery.toLowerCase());
-                return matchesCat && matchesSearch;
-            });
+<article class="cmd-card" data-category="Usuários" data-levels="iniciante,intermediario,avancado" data-tags="adduser userdel passwd criar remover usuário senha">
+<div class="ch"><div class="ch-l"><div class="cname">adduser / userdel / passwd</div><div class="cdesc">Criar, remover usuários e alterar senhas.</div></div><div class="cbs"><span class="badge b-c">Usuários</span></div></div>
+<div class="cc"><div class="tl" id="g-usr">
+<button class="tab-t active" data-tab="usr0" onclick="switchTab('usr0','g-usr')">🟢 Básico</button>
+<button class="tab-t" data-tab="usr1" onclick="switchTab('usr1','g-usr')">🔵 Médio</button>
+<button class="tab-t" data-tab="usr2" onclick="switchTab('usr2','g-usr')">🟣 Avançado</button>
+</div>
+<div id="p-usr0" class="tab-p active"><div class="cw"><div class="cb">sudo adduser joao</div><button class="cp" onclick="copyCmd(this,'sudo adduser joao')">⎘</button></div><p class="ce">Cria usuário de forma interativa (pede senha e dados).</p></div>
+<div id="p-usr1" class="tab-p"><div class="cw"><div class="cb">sudo adduser deploy && sudo usermod -aG sudo deploy</div><button class="cp" onclick="copyCmd(this,'sudo adduser deploy && sudo usermod -aG sudo deploy')">⎘</button></div><p class="ce">Cria usuário de deploy e adiciona ao grupo sudo.</p></div>
+<div id="p-usr2" class="tab-p"><div class="cw"><div class="cb">sudo userdel -r joao && getent passwd joao</div><button class="cp" onclick="copyCmd(this,'sudo userdel -r joao && getent passwd joao')">⎘</button></div><p class="ce"><em>-r</em> remove com a pasta home. <em>getent</em> confirma remoção.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Grupos</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><ul class="uc"><li>groups &lt;usuario&gt; → ver grupos</li><li>id &lt;usuario&gt; → UID, GID e grupos</li><li>usermod -aG docker $USER → adicionar ao docker</li><li>gpasswd -d usuario grupo → remover de grupo</li><li>cat /etc/passwd → listar todos usuários</li></ul></div></div>
+</article>
 
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-20 text-slate-500">Nenhum comando encontrado para "${searchQuery}"</div>`;
-                return;
-            }
+</div></section>
 
-            grid.innerHTML = filtered.map((cmd, idx) => `
-                <div class="command-card p-6 rounded-xl">
-                    <!-- Header -->
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex-1">
-                            <h3 class="text-2xl font-bold text-emerald-400 mb-1">${cmd.name}</h3>
-                            <p class="text-slate-400 text-sm">${cmd.shortDesc}</p>
-                        </div>
-                        <span class="text-[10px] uppercase tracking-wider bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded border border-emerald-500/20">${cmd.category}</span>
-                    </div>
+<section class="cat-sec" data-section="Permissões">
+<div class="sh"><span class="si2">🔒</span><h2 class="st">Permissões &amp; Propriedade</h2><span class="sc">5 cards</span></div>
+<div class="grid">
 
-                    <!-- Frameworks Used -->
-                    <div class="mb-4 pb-4 border-b border-slate-700">
-                        ${cmd.frameworks.map(fw => {
-                            let fwClass = '';
-                            if (fw === 'CLEAR') fwClass = 'framework-clear';
-                            else if (fw === 'CO-STAR') fwClass = 'framework-costar';
-                            else if (fw === 'CRISPE') fwClass = 'framework-crispe';
-                            return `<span class="framework-badge ${fwClass}">${fw}</span>`;
-                        }).join('')}
-                    </div>
+<article class="cmd-card" data-category="Permissões" data-levels="iniciante,intermediario,avancado" data-tags="chmod permissão arquivo execução leitura escrita rwx">
+<div class="ch"><div class="ch-l"><div class="cname">chmod</div><div class="cdesc">Alterar permissões de acesso a arquivos.</div></div><div class="cbs"><span class="badge b-c">Permissões</span></div></div>
+<div class="cc"><div class="tl" id="g-chmod">
+<button class="tab-t active" data-tab="ch0" onclick="switchTab('ch0','g-chmod')">🟢 Básico</button>
+<button class="tab-t" data-tab="ch1" onclick="switchTab('ch1','g-chmod')">🔵 Médio</button>
+<button class="tab-t" data-tab="ch2" onclick="switchTab('ch2','g-chmod')">🟣 Avançado</button>
+</div>
+<div id="p-ch0" class="tab-p active"><div class="cw"><div class="cb">chmod +x script.sh</div><button class="cp" onclick="copyCmd(this,'chmod +x script.sh')">⎘</button></div><p class="ce">Adiciona permissão de execução para todos.</p></div>
+<div id="p-ch1" class="tab-p"><div class="cw"><div class="cb">chmod 755 script.sh</div><button class="cp" onclick="copyCmd(this,'chmod 755 script.sh')">⎘</button></div><p class="ce"><em>7</em>=dono(rwx) <em>5</em>=grupo(r-x) <em>5</em>=outros(r-x). Padrão para scripts.</p></div>
+<div id="p-ch2" class="tab-p"><div class="cw"><div class="cb">chmod -R u=rwX,g=rX,o= /var/www/html</div><button class="cp" onclick="copyCmd(this,'chmod -R u=rwX,g=rX,o= /var/www/html')">⎘</button></div><p class="ce">Simbólico recursivo: dono lê/escreve, grupo lê, outros sem acesso. <em>X</em> aplica exec só em diretórios.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>📖 Tabela rwx</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain">
+<table class="pt"><tr><th>Char</th><th>Dec</th><th>Permissão</th></tr>
+<tr><td class="mono" style="color:var(--tx-f)">---</td><td style="color:var(--tx-f);padding-left:.5rem">0</td><td style="color:var(--tx-f);padding-left:.5rem">Nenhuma</td></tr>
+<tr><td class="mono" style="color:#60a5fa">--x</td><td style="color:var(--tx-m);padding-left:.5rem">1</td><td style="color:var(--tx-m);padding-left:.5rem">Execução</td></tr>
+<tr><td class="mono" style="color:#93c5fd">-w-</td><td style="color:var(--tx-m);padding-left:.5rem">2</td><td style="color:var(--tx-m);padding-left:.5rem">Escrita</td></tr>
+<tr><td class="mono" style="color:#fbbf24">r--</td><td style="color:var(--tx-m);padding-left:.5rem">4</td><td style="color:var(--tx-m);padding-left:.5rem">Leitura</td></tr>
+<tr><td class="mono" style="color:#fb923c">rw-</td><td style="color:var(--tx-m);padding-left:.5rem">6</td><td style="color:var(--tx-m);padding-left:.5rem">Leitura+Escrita</td></tr>
+<tr><td class="mono" style="color:var(--pr);font-weight:600">rwx</td><td style="color:var(--pr);padding-left:.5rem;font-weight:600">7</td><td style="color:var(--pr);padding-left:.5rem;font-weight:600">Total</td></tr>
+</table>
+<div class="sep"></div>
+<ul class="uc"><li>600 → chaves SSH privadas</li><li>644 → arquivos web</li><li>755 → scripts executáveis</li><li>777 → evite! Todos têm acesso total</li></ul>
+</div></div>
+</article>
 
-                    <!-- Description -->
-                    <p class="text-slate-400 text-sm mb-4">${cmd.description}</p>
+<article class="cmd-card" data-category="Permissões" data-levels="intermediario,avancado" data-tags="chown dono proprietário arquivo diretório grupo">
+<div class="ch"><div class="ch-l"><div class="cname">chown / ls -l</div><div class="cdesc">Alterar dono e visualizar permissões.</div></div><div class="cbs"><span class="badge b-c">Permissões</span><span class="badge b-m">Intermediário+</span></div></div>
+<div class="cc"><div class="tl" id="g-chown">
+<button class="tab-t active" data-tab="co0" onclick="switchTab('co0','g-chown')">🔵 Médio</button>
+<button class="tab-t" data-tab="co1" onclick="switchTab('co1','g-chown')">🟣 Avançado</button>
+</div>
+<div id="p-co0" class="tab-p active"><div class="cw"><div class="cb">ls -lha && chown usuario:grupo arquivo</div><button class="cp" onclick="copyCmd(this,'ls -lha && chown usuario:grupo arquivo')">⎘</button></div><p class="ce">Lista permissões atuais e altera dono+grupo.</p></div>
+<div id="p-co1" class="tab-p"><div class="cw"><div class="cb">chown -R www-data:www-data /var/www/html</div><button class="cp" onclick="copyCmd(this,'chown -R www-data:www-data /var/www/html')">⎘</button></div><p class="ce">Transfere propriedade ao servidor web recursivamente — padrão para Nginx/Apache.</p></div>
+</div>
+</article>
 
-                    <!-- Context/Role -->
-                    <div class="bg-slate-800/50 p-3 rounded mb-4 border border-slate-700">
-                        <p class="text-xs font-semibold text-slate-300 mb-1">👤 Quem usa:</p>
-                        <p class="text-xs text-slate-400">${cmd.role}</p>
-                    </div>
+</div></section>
+<section class="cat-sec" data-section="Processos">
+<div class="sh"><span class="si2">⚙️</span><h2 class="st">Processos &amp; Serviços</h2><span class="sc">7 cards</span></div>
+<div class="grid">
 
-                    <!-- Examples Tabs -->
-                    <div class="mb-4">
-                        <div class="flex border-b border-slate-700 mb-3 gap-2">
-                            ${cmd.examples.map((ex, i) => `
-                                <button class="tab-btn ${i === 0 ? 'active' : ''}" onclick="switchTab(event, 'cmd-${cmd.id}-example-${i}')">
-                                    ${ex.level}
-                                </button>
-                            `).join('')}
-                        </div>
+<article class="cmd-card" data-category="Processos" data-levels="iniciante,intermediario,avancado" data-tags="ps top kill pgrep processo monitorar pid cpu">
+<div class="ch"><div class="ch-l"><div class="cname">ps / top / kill</div><div class="cdesc">Monitorar e encerrar processos em execução.</div></div><div class="cbs"><span class="badge b-c">Processos</span></div></div>
+<div class="cc"><div class="tl" id="g-proc">
+<button class="tab-t active" data-tab="pr0" onclick="switchTab('pr0','g-proc')">🟢 Básico</button>
+<button class="tab-t" data-tab="pr1" onclick="switchTab('pr1','g-proc')">🔵 Médio</button>
+<button class="tab-t" data-tab="pr2" onclick="switchTab('pr2','g-proc')">🟣 Avançado</button>
+</div>
+<div id="p-pr0" class="tab-p active"><div class="cw"><div class="cb">ps aux</div><button class="cp" onclick="copyCmd(this,'ps aux')">⎘</button></div><p class="ce">Lista todos os processos com PID, CPU e MEM.</p></div>
+<div id="p-pr1" class="tab-p"><div class="cw"><div class="cb">ps aux | grep nginx | grep -v grep</div><button class="cp" onclick="copyCmd(this,'ps aux | grep nginx | grep -v grep')">⎘</button></div><p class="ce">Encontra processos do nginx filtrando o próprio grep.</p></div>
+<div id="p-pr2" class="tab-p"><div class="cw"><div class="cb">ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head -15</div><button class="cp" onclick="copyCmd(this,'ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head -15')">⎘</button></div><p class="ce">Os 15 processos que mais consomem CPU com colunas customizadas.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>⚠️ Sobre kill</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><div class="al al-w"><span class="aico">⚠️</span><span class="atxt"><strong>kill -9</strong> força sem limpeza. Prefira <strong>kill -15</strong> (SIGTERM) primeiro.</span></div><ul class="uc"><li>kill &lt;PID&gt; → SIGTERM (suave)</li><li>kill -9 &lt;PID&gt; → SIGKILL (forçado)</li><li>pkill nginx → mata pelo nome</li><li>killall node → mata todos os processos node</li></ul></div></div>
+</article>
 
-                        ${cmd.examples.map((ex, i) => `
-                            <div id="cmd-${cmd.id}-example-${i}" class="tab-content ${i === 0 ? 'active' : ''} example-section mb-3">
-                                <p class="example-label mb-2">${ex.level}</p>
-                                <div class="code-block group relative mb-2">
-                                    <code>${escapeHtml(ex.command)}</code>
-                                    <button onclick="copyToClipboard('${ex.command.replace(/'/g, "\\'")}', this)" class="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 px-2 py-1 rounded text-[10px] text-emerald-500 border border-emerald-500/30">Copiar</button>
-                                </div>
-                                <p class="text-xs text-slate-500">${ex.explanation}</p>
-                            </div>
-                        `).join('')}
-                    </div>
+<article class="cmd-card" data-category="Processos" data-levels="intermediario,avancado" data-tags="systemctl service status start stop restart enable journalctl log">
+<div class="ch"><div class="ch-l"><div class="cname">systemctl</div><div class="cdesc">Gerenciar serviços com o systemd.</div></div><div class="cbs"><span class="badge b-c">Processos</span><span class="badge b-m">Intermediário+</span></div></div>
+<div class="cc"><div class="tl" id="g-sysd">
+<button class="tab-t active" data-tab="sd0" onclick="switchTab('sd0','g-sysd')">🔵 Médio</button>
+<button class="tab-t" data-tab="sd1" onclick="switchTab('sd1','g-sysd')">🟣 Avançado</button>
+</div>
+<div id="p-sd0" class="tab-p active"><div class="cw"><div class="cb">systemctl status nginx</div><button class="cp" onclick="copyCmd(this,'systemctl status nginx')">⎘</button></div><p class="ce">Verifica se o serviço está ativo, inativo ou com erro.</p></div>
+<div id="p-sd1" class="tab-p"><div class="cw"><div class="cb">systemctl restart nginx || (systemctl status nginx && journalctl -u nginx -n 50)</div><button class="cp" onclick="copyCmd(this,'systemctl restart nginx || (systemctl status nginx && journalctl -u nginx -n 50)')">⎘</button></div><p class="ce">Reinicia e, se falhar, exibe status + últimos 50 logs.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Referência</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><ul class="uc"><li>systemctl start|stop|restart &lt;serviço&gt;</li><li>systemctl enable → iniciar no boot</li><li>systemctl disable → não iniciar no boot</li><li>journalctl -u &lt;serviço&gt; -f → logs em tempo real</li><li>systemctl list-units --type=service → listar todos</li></ul></div></div>
+</article>
 
-                    <!-- Use Cases -->
-                    <div class="mb-4">
-                        <p class="text-xs font-semibold text-emerald-400 mb-2">💡 Casos de Uso:</p>
-                        ${cmd.useCases.map(uc => `
-                            <div class="use-case">
-                                <code>${escapeHtml(uc)}</code>
-                            </div>
-                        `).join('')}
-                    </div>
+</div></section>
 
-                    <!-- Tips -->
-                    <div class="mb-4">
-                        <p class="text-xs font-semibold text-blue-400 mb-2">✨ Dicas:</p>
-                        ${cmd.tips.map(tip => `
-                            <div class="tip-box">
-                                <p class="text-slate-300">${tip}</p>
-                            </div>
-                        `).join('')}
-                    </div>
+<section class="cat-sec" data-section="Rede">
+<div class="sh"><span class="si2">🌐</span><h2 class="st">Rede</h2><span class="sc">5 cards</span></div>
+<div class="grid">
 
-                    <!-- Warnings -->
-                    ${cmd.warnings.length > 0 ? `
-                        <div>
-                            <p class="text-xs font-semibold text-red-400 mb-2">⚠️ Cuidado:</p>
-                            ${cmd.warnings.map(warn => `
-                                <div class="danger-box">
-                                    <p>${warn}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
-        }
+<article class="cmd-card" data-category="Rede" data-levels="iniciante,intermediario,avancado" data-tags="curl wget download http api requisição get post token">
+<div class="ch"><div class="ch-l"><div class="cname">curl</div><div class="cdesc">Fazer requisições HTTP/HTTPS e downloads.</div></div><div class="cbs"><span class="badge b-c">Rede</span></div></div>
+<div class="cc"><div class="tl" id="g-curl">
+<button class="tab-t active" data-tab="cu0" onclick="switchTab('cu0','g-curl')">🟢 Básico</button>
+<button class="tab-t" data-tab="cu1" onclick="switchTab('cu1','g-curl')">🔵 Médio</button>
+<button class="tab-t" data-tab="cu2" onclick="switchTab('cu2','g-curl')">🟣 Avançado</button>
+</div>
+<div id="p-cu0" class="tab-p active"><div class="cw"><div class="cb">curl https://api.github.com</div><button class="cp" onclick="copyCmd(this,'curl https://api.github.com')">⎘</button></div><p class="ce">GET simples — exibe a resposta no terminal.</p></div>
+<div id="p-cu1" class="tab-p"><div class="cw"><div class="cb">curl -X POST -H "Content-Type: application/json" -d '{"name":"João"}' https://api.exemplo.com/users</div><button class="cp" onclick="copyCmd(this,'curl -X POST -H &quot;Content-Type: application/json&quot; -d &apos;{}&apos; https://api.exemplo.com/users')">⎘</button></div><p class="ce">POST com JSON: <em>-H</em> header, <em>-d</em> body.</p></div>
+<div id="p-cu2" class="tab-p"><div class="cw"><div class="cb">curl -s -o /dev/null -w "%{http_code} %{time_total}s" https://meusite.com</div><button class="cp" onclick="copyCmd(this,'curl -s -o /dev/null -w &quot;%{http_code} %{time_total}s&quot; https://meusite.com')">⎘</button></div><p class="ce">Health check: exibe só o status HTTP e tempo de resposta.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>⚠️ Segurança</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><div class="al al-w"><span class="aico">⚠️</span><span class="atxt">Nunca passe tokens na linha de comando — ficam no <em>.bash_history</em>. Use: <strong>-H "Authorization: Bearer $TOKEN"</strong></span></div></div></div>
+</article>
 
-        function setCategory(id) {
-            activeCategory = id;
-            renderCategories();
-            renderCommands();
-        }
+<article class="cmd-card" data-category="Rede" data-levels="iniciante,intermediario,avancado" data-tags="ping ss ip netstat ifconfig diagnóstico portas interface conectividade">
+<div class="ch"><div class="ch-l"><div class="cname">ping / ss / ip</div><div class="cdesc">Diagnóstico de conectividade e interfaces de rede.</div></div><div class="cbs"><span class="badge b-c">Rede</span></div></div>
+<div class="cc"><div class="tl" id="g-net">
+<button class="tab-t active" data-tab="net0" onclick="switchTab('net0','g-net')">🟢 Básico</button>
+<button class="tab-t" data-tab="net1" onclick="switchTab('net1','g-net')">🔵 Médio</button>
+<button class="tab-t" data-tab="net2" onclick="switchTab('net2','g-net')">🟣 Avançado</button>
+</div>
+<div id="p-net0" class="tab-p active"><div class="cw"><div class="cb">ping -c 4 google.com</div><button class="cp" onclick="copyCmd(this,'ping -c 4 google.com')">⎘</button></div><p class="ce">Testa conectividade enviando 4 pacotes.</p></div>
+<div id="p-net1" class="tab-p"><div class="cw"><div class="cb">ss -tulnp | grep LISTEN</div><button class="cp" onclick="copyCmd(this,'ss -tulnp | grep LISTEN')">⎘</button></div><p class="ce">Portas em escuta com o processo responsável.</p></div>
+<div id="p-net2" class="tab-p"><div class="cw"><div class="cb">ip -s link && ss -s</div><button class="cp" onclick="copyCmd(this,'ip -s link && ss -s')">⎘</button></div><p class="ce">Estatísticas de tráfego por interface + resumo de conexões.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 Referência</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><ul class="uc"><li>tracepath &lt;host&gt; → rastrear rota</li><li>mtr &lt;host&gt; → diagnóstico com rotas em tempo real</li><li>ip addr → interfaces de rede (substitui ifconfig)</li><li>netstat -atunp → processos com portas abertas</li></ul></div></div>
+</article>
 
-        function switchTab(event, tabId) {
-            event.preventDefault();
-            const tabBtn = event.target;
-            const cmdCardContainer = tabBtn.closest('.command-card');
-            
-            // Remove active class de todos os tabs
-            cmdCardContainer.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            cmdCardContainer.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            // Ativa o tab clicado
-            tabBtn.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        }
+</div></section>
 
-        function copyToClipboard(text, button) {
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = button.textContent;
-                button.textContent = '✓ Copiado!';
-                button.style.color = '#10b981';
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.style.color = '#10b981';
-                }, 2000);
-            });
-        }
+<section class="cat-sec" data-section="SSH">
+<div class="sh"><span class="si2">🔐</span><h2 class="st">SSH &amp; Transferência Remota</h2><span class="sc">8 cards</span></div>
+<div class="grid">
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+<article class="cmd-card" data-category="SSH" data-levels="iniciante,intermediario,avancado" data-tags="ssh conectar servidor remoto chave porta tunnel bastion">
+<div class="ch"><div class="ch-l"><div class="cname">ssh</div><div class="cdesc">Conexão segura e criptografada a servidores remotos.</div></div><div class="cbs"><span class="badge b-c">SSH</span></div></div>
+<div class="cc"><div class="tl" id="g-ssh">
+<button class="tab-t active" data-tab="ssh0" onclick="switchTab('ssh0','g-ssh')">🟢 Básico</button>
+<button class="tab-t" data-tab="ssh1" onclick="switchTab('ssh1','g-ssh')">🔵 Médio</button>
+<button class="tab-t" data-tab="ssh2" onclick="switchTab('ssh2','g-ssh')">🟣 Avançado</button>
+</div>
+<div id="p-ssh0" class="tab-p active"><div class="cw"><div class="cb">ssh usuario@192.168.1.100</div><button class="cp" onclick="copyCmd(this,'ssh usuario@192.168.1.100')">⎘</button></div><p class="ce">Conecta com autenticação por senha.</p></div>
+<div id="p-ssh1" class="tab-p"><div class="cw"><div class="cb">ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@servidor.com</div><button class="cp" onclick="copyCmd(this,'ssh -i ~/.ssh/id_ed25519 -p 2222 deploy@servidor.com')">⎘</button></div><p class="ce">Chave privada ed25519 e porta customizada — padrão em produção.</p></div>
+<div id="p-ssh2" class="tab-p"><div class="cw"><div class="cb">ssh -L 5432:db-interno:5432 bastion@jump.empresa.com</div><button class="cp" onclick="copyCmd(this,'ssh -L 5432:db-interno:5432 bastion@jump.empresa.com')">⎘</button></div><p class="ce">Tunnel: acessa banco interno via servidor bastion.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>⚠️ Segurança</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><div class="al al-w"><span class="aico">⚠️</span><span class="atxt">Em produção: <strong>PasswordAuthentication no</strong> e <strong>PermitRootLogin no</strong> em <em>/etc/ssh/sshd_config</em>.</span></div><div class="al al-t"><span class="aico">💡</span><span class="atxt">Configure <strong>~/.ssh/config</strong> com atalhos — depois use apenas <strong>ssh prod</strong>.</span></div><ul class="uc"><li>ssh-keygen -t ed25519 → gerar chave moderna</li><li>ssh-copy-id usuario@host → instalar chave pública</li><li>ssh-add ~/.ssh/id_ed25519 → carregar no agent</li></ul></div></div>
+</article>
 
-        document.getElementById('search').addEventListener('input', (e) => {
-            searchQuery = e.target.value;
-            renderCommands();
-        });
+<article class="cmd-card" data-category="SSH" data-levels="intermediario,avancado" data-tags="scp rsync copiar arquivo remoto sync compressão">
+<div class="ch"><div class="ch-l"><div class="cname">scp / rsync</div><div class="cdesc">Transferir arquivos entre máquinas via SSH.</div></div><div class="cbs"><span class="badge b-c">SSH</span><span class="badge b-m">Intermediário+</span></div></div>
+<div class="cc"><div class="tl" id="g-scp">
+<button class="tab-t active" data-tab="scp0" onclick="switchTab('scp0','g-scp')">🔵 Médio</button>
+<button class="tab-t" data-tab="scp1" onclick="switchTab('scp1','g-scp')">🟣 Avançado</button>
+</div>
+<div id="p-scp0" class="tab-p active"><div class="cw"><div class="cb">scp -r ./dist usuario@servidor:/var/www/html</div><button class="cp" onclick="copyCmd(this,'scp -r ./dist usuario@servidor:/var/www/html')">⎘</button></div><p class="ce">Envia o build completo para o servidor.</p></div>
+<div id="p-scp1" class="tab-p"><div class="cw"><div class="cb">rsync -avz --delete --exclude=node_modules ./projeto/ usuario@servidor:/app/</div><button class="cp" onclick="copyCmd(this,'rsync -avz --delete --exclude=node_modules ./projeto/ usuario@servidor:/app/')">⎘</button></div><p class="ce">Sincroniza só o que mudou, deleta removidos, exclui node_modules. Muito mais eficiente que scp.</p></div>
+</div>
+<button class="ab" onclick="toggleAcc(this)" aria-expanded="false"><span>💡 scp vs rsync</span><span class="aic">▾</span></button>
+<div class="abody"><div class="ain"><div class="al al-i"><span class="aico">ℹ️</span><span class="atxt"><strong>rsync</strong> é sempre preferível: transfere só o que mudou, suporta --progress e é retomável.</span></div></div></div>
+</article>
 
-        // Initial render
-        renderCategories();
-        renderCommands();
-    </script>
-</body>
-</html>
+</div></section>
+
+<div id="empty" style="display:none;text-align:center;padding:5rem 1rem;color:var(--tx-f)">
+  <div style="font-size:2rem;margin-bottom:.5rem">🔍</div>
+  <p style="font-size:.85rem">Nenhum resultado. Tente outro termo ou selecione "Todos".</p>
+</div>
+</div></div></div>
+<script src="assets/js/app.js"></script>
+</body></html>
