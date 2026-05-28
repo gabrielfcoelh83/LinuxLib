@@ -109,4 +109,9 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;padding:.06rem .35re
 .pt td{padding:.2rem 0}
 #empty{display:none;text-align:center;padding:5rem 1rem;color:var(--tx-f)}
 #empty .ei{font-size:2rem;margin-bottom:.5rem}
+.footer-meta{margin-top:auto;padding:0 .4rem;border-top:1px solid var(--bd-s);padding-top:.75rem}
+.footer-meta p{font-size:.65rem;color:var(--tx-f);line-height:1.7}
+.footer-meta a{color:var(--tx-f);text-decoration:none}
+.footer-meta a:first-of-type{color:var(--pr)}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
 @media(max-width:768px){.sidebar{display:none}.grid{grid-template-columns:1fr}.lw{display:none}.topbar{padding:.7rem 1rem}.content{padding:1rem}}

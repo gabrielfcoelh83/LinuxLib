@@ -1,5 +1,8 @@
-import { categories } from "@/data/commands";
+import { categories, commands } from "@/data/commands";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Grid3x3,
   Settings,
@@ -29,27 +32,49 @@ export default function CategoryFilter({
   selectedCategory,
   onSelectCategory,
 }: CategoryFilterProps) {
+  const categoryCounts = commands.reduce<Record<string, number>>((counts, command) => {
+    counts[command.category] = (counts[command.category] ?? 0) + 1;
+    return counts;
+  }, {});
+
   return (
     <aside className="w-full lg:w-64 flex-shrink-0">
-      <div className="sticky top-24 space-y-2">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-4">
-          Categorias
-        </h3>
-        <div className="flex flex-wrap lg:flex-col gap-2">
-          {categories.map((category) => (
-            <Button
-              key={category.id}
-              variant={selectedCategory === category.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => onSelectCategory(category.id)}
-              className="justify-start gap-2 flex-1 lg:flex-none"
-            >
-              {iconMap[category.icon]}
-              <span className="hidden sm:inline">{category.name}</span>
-            </Button>
-          ))}
-        </div>
-      </div>
+      <Card className="sticky top-24 overflow-hidden">
+        <CardHeader className="space-y-1 pb-4">
+          <CardTitle className="text-base font-space-grotesk">Categorias</CardTitle>
+          <CardDescription>Filtre a biblioteca por tema.</CardDescription>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <ScrollArea className="h-[calc(100vh-14rem)] pr-3">
+            <div className="flex flex-wrap gap-2 lg:flex-col">
+              {categories.map((category) => {
+                const isActive = selectedCategory === category.id;
+                const count = category.id === "all"
+                  ? commands.length
+                  : categoryCounts[category.id] ?? 0;
+
+                return (
+                  <Button
+                    key={category.id}
+                    variant={isActive ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => onSelectCategory(category.id)}
+                    className="justify-between gap-3 flex-1 lg:flex-none"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      {iconMap[category.icon]}
+                      <span className="truncate">{category.name}</span>
+                    </span>
+                    <Badge variant={isActive ? "secondary" : "outline"} className="shrink-0">
+                      {count}
+                    </Badge>
+                  </Button>
+                );
+              })}
+            </div>
+          </ScrollArea>
+        </CardContent>
+      </Card>
     </aside>
   );
 }
