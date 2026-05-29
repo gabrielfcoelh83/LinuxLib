@@ -109,6 +109,22 @@ kbd{font-family:'JetBrains Mono',monospace;font-size:.66rem;padding:.06rem .35re
 .pt td{padding:.2rem 0}
 #empty{display:none;text-align:center;padding:5rem 1rem;color:var(--tx-f)}
 #empty .ei{font-size:2rem;margin-bottom:.5rem}
+.search-container{margin-bottom:1rem}
+.search-input{width:100%;background:var(--bg-s);border:1px solid var(--bd);border-radius:var(--r);padding:.7rem .9rem;color:var(--tx);font-family:inherit;font-size:.9rem;outline:none;transition:border-color var(--t),box-shadow var(--t)}
+.search-input:focus{border-color:var(--pr);box-shadow:0 0 0 3px var(--pr-rg)}
+.search-input::placeholder{color:var(--tx-f)}
+.results-info{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;color:var(--tx-f);font-size:.72rem;font-family:'JetBrains Mono',monospace}
+.empty-state{display:none;text-align:center;padding:3rem 1rem;color:var(--tx-f)}
+.empty-state p{font-size:.9rem}
+.cat-sec{margin-top:1.5rem}
+.cat-sec h2{font-size:.95rem;margin-bottom:.85rem;color:var(--tx);font-weight:700;letter-spacing:-.02em}
+.cmd-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:.85rem}
+.cmd-card{background:linear-gradient(180deg,var(--bg-c),var(--bg-s));border:1px solid var(--bd-s);border-radius:var(--rl);padding:1rem;box-shadow:var(--sh);transition:transform var(--t),border-color var(--t),box-shadow var(--t)}
+.cmd-card:hover{transform:translateY(-1px);border-color:var(--bd);box-shadow:var(--shm)}
+.cmd-name{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:.98rem;font-weight:700;color:var(--pr);margin-bottom:.35rem;padding:.14rem .45rem;border-radius:999px;background:var(--pr-bg);border:1px solid var(--pr-rg)}
+.cmd-desc{color:var(--tx);font-size:.84rem;line-height:1.55;margin-bottom:.6rem}
+.cmd-example{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--tx-m);padding:.55rem .65rem;border:1px solid var(--bd-s);border-radius:var(--r);background:rgba(0,0,0,.18);overflow:auto}
+.cmd-example::before{content:'$ ';color:var(--pr)}
 .footer-meta{margin-top:auto;padding:0 .4rem;border-top:1px solid var(--bd-s);padding-top:.75rem}
 .footer-meta p{font-size:.65rem;color:var(--tx-f);line-height:1.7}
 .footer-meta a{color:var(--tx-f);text-decoration:none}
