@@ -173,6 +173,156 @@
       <div class="cmd-desc">Abre o manual de um comando.</div>
       <div class="cmd-example">$ man grep</div>
     </div>
+    <div class="cmd-card" data-category="Processosarral" data-tags="systemd,daemon,service">
+      <div class="cmd-name">systemd</div>
+      <div class="cmd-desc">Sistema de inicialização e gerenciamento de serviços.</div>
+      <div class="cmd-example">$ systemctl start nginx</div>
+    </div>
+    <div class="cmd-card" data-category="Navegação" data-tags="pwd,printwdir">
+      <div class="cmd-name">pwd</div>
+      <div class="cmd-desc">Imprime o diretório de trabalho atual.</div>
+      <div class="cmd-example">$ pwd</div>
+    </div>
+    <div class="cmd-card" data-category="Operadores" data-tags="regex,pattern">
+      <div class="cmd-name">sed</div>
+      <div class="cmd-desc">Editor de fluxo para filtrar e processar texto.</div>
+      <div class="cmd-example">$ sed 's/palavra/substitui/g' arquivo.txt</div>
+    </div>
+    <div class="cmd-card" data-category="Operadores" data-tags="awk,processing">
+      <div class="cmd-name">awk</div>
+      <div class="cmd-desc">Processador de padrões para análise de texto.</div>
+      <div class="cmd-example">$ awk '{print $1}' arquivo.txt</div>
+    </div>
+    <div class="cmd-card" data-category="Operadores" data-tags="pipe,flow">
+      <div class="cmd-name">pipe</div>
+      <div class="cmd-desc">Canaliza saída de um comando para outro.</div>
+      <div class="cmd-example">$ cat arquivo.txt | grep palavra</div>
+    </div>
+    <div class="cmd-card" data-category="Operadores" data-tags="redirect,output">
+      <div class="cmd-name">redirecionamento</div>
+      <div class="cmd-desc">Redireciona entrada/saída para arquivos ou dispositivos.</div>
+      <div class="cmd-example">$ comando > arquivo.txt</div>
+    </div>
+    <div class="cmd-card" data-category="Símbolos" data-tags="wildcard,pattern">
+      <div class="cmd-name">*</div>
+      <div class="cmd-desc">Coringa para qualquer número de caracteres.</div>
+      <div class="cmd-example">$ ls *.txt</div>
+    </div>
+    <div class="cmd-card" data-category="Símbolos" data-tags="question,single">
+      <div class="cmd-name">?</div>
+      <div class="cmd-desc">Coringa para um único caractere.</div>
+      <div class="cmd-example">$ ls arquivo?.txt</div>
+    </div>
+    <div class="cmd-card" data-category="Símbolos" data-tags="bracket,range">
+      <div class="cmd-name">[]</div>
+      <div class="cmd-desc">Define um intervalo de caracteres.</div>
+      <div class="cmd-example">$ ls arquivo[1-3].txt</div>
+    </div>
+    <div class="cmd-card" data-category="Símbolos" data-tags="pipe,connection">
+      <div class="cmd-name">|</div>
+      <div class="cmd-desc">Conecta a saída de um comando à entrada de outro.</div>
+      <div class="cmd-example">$ ls -la | grep txt</div>
+    </div>
+    <div class="cmd-card" data-category="Atalhos" data-tags="ctrl,keyboard">
+      <div class="cmd-name">Ctrl+C</div>
+      <div class="cmd-desc">Interrompe a execução do comando atual.</div>
+      <div class="cmd-example">$ [Ctrl+C]</div>
+    </div>
+    <div class="cmd-card" data-category="Atalhos" data-tags="ctrl,suspend">
+      <div class="cmd-name">Ctrl+Z</div>
+      <div class="cmd-desc">Suspende o processo e o coloca em background.</div>
+      <div class="cmd-example">$ [Ctrl+Z]</div>
+    </div>
+    <div class="cmd-card" data-category="Atalhos" data-tags="up,history">
+      <div class="cmd-name">Seta para cima</div>
+      <div class="cmd-desc">Acessa o comando anterior no histórico.</div>
+      <div class="cmd-example">$ [Up Arrow]</div>
+    </div>
+    <div class="cmd-card" data-category="Atalhos" data-tags="tab,completion">
+      <div class="cmd-name">Tab</div>
+      <div class="cmd-desc">Completa nomes de arquivos e comandos.</div>
+      <div class="cmd-example">$ [Tab]</div>
+    </div>
+    <div class="cmd-card" data-category="Navegação" data-tags="pushd,directory">
+      <div class="cmd-name">pushd</div>
+      <div class="cmd-desc">Muda para um diretório e salva o anterior na pilha.</div>
+      <div class="cmd-example">$ pushd /home/user</div>
+    </div>
+    <div class="cmd-card" data-category="Navegação" data-tags="popd,return">
+      <div class="cmd-name">popd</div>
+      <div class="cmd-desc">Volta para o diretório previamente salvo.</div>
+      <div class="cmd-example">$ popd</div>
+    </div>
+    <div class="cmd-card" data-category="Navegação" data-tags="dirs,list">
+      <div class="cmd-name">dirs</div>
+      <div class="cmd-desc">Lista o stack de diretórios.</div>
+      <div class="cmd-example">$ dirs</div>
+    </div>
+    <div class="cmd-card" data-category="Operadores" data-tags="grep,lines">
+      <div class="cmd-name">grep -v</div>
+      <div class="cmd-desc">Inverte a correspondência (exclui linhas com padrão).</div>
+      <div class="cmd-example">$ grep -v error arquivo.log</div>
+    </div>
+    <div class="cmd-card" data-category="Pacotes" data-tags="apt,package">
+      <div class="cmd-name">apt</div>
+      <div class="cmd-desc">Gerenciador de pacotes APT (Debian/Ubuntu).</div>
+      <div class="cmd-example">$ apt install pacote</div>
+    </div>
+    <div class="cmd-card" data-category="Pacotes" data-tags="yum,rpm">
+      <div class="cmd-name">yum</div>
+      <div class="cmd-desc">Gerenciador de pacotes YUM (RedHat/CentOS).</div>
+      <div class="cmd-example">$ yum install pacote</div>
+    </div>
+    <div class="cmd-card" data-category="Pacotes" data-tags="brew,mac">
+      <div class="cmd-name">brew</div>
+      <div class="cmd-desc">Gerenciador de pacotes Homebrew (macOS).</div>
+      <div class="cmd-example">$ brew install pacote</div>
+    </div>
+    <div class="cmd-card" data-category="Pacotes" data-tags="pip,python">
+      <div class="cmd-name">pip</div>
+      <div class="cmd-desc">Gerenciador de pacotes para Python.</div>
+      <div class="cmd-example">$ pip install pacote</div>
+    </div>
+    <div class="cmd-card" data-category="Pacotes" data-tags="npm,javascript">
+      <div class="cmd-name">npm</div>
+      <div class="cmd-desc">Gerenciador de pacotes para Node.js/JavaScript.</div>
+      <div class="cmd-example">$ npm install pacote</div>
+    </div>
+    <div class="cmd-card" data-category="Pacotes" data-tags="gem,ruby">
+      <div class="cmd-name">gem</div>
+      <div class="cmd-desc">Gerenciador de pacotes para Ruby.</div>
+      <div class="cmd-example">$ gem install pacote</div>
+    </div>
+    <div class="cmd-card" data-category="Usuários" data-tags="whoami,current">
+      <div class="cmd-name">whoami</div>
+      <div class="cmd-desc">Mostra o usuário atual.</div>
+      <div class="cmd-example">$ whoami</div>
+    </div>
+    <div class="cmd-card" data-category="Usuários" data-tags="who,logged">
+      <div class="cmd-name">who</div>
+      <div class="cmd-desc">Lista usuários conectados no sistema.</div>
+      <div class="cmd-example">$ who</div>
+    </div>
+    <div class="cmd-card" data-category="Usuários" data-tags="su,switch">
+      <div class="cmd-name">su</div>
+      <div class="cmd-desc">Muda para outro usuário (geralmente root).</div>
+      <div class="cmd-example">$ su -</div>
+    </div>
+    <div class="cmd-card" data-category="Usuários" data-tags="sudo,privilege">
+      <div class="cmd-name">sudo</div>
+      <div class="cmd-desc">Executa comando com privilégios de outro usuário.</div>
+      <div class="cmd-example">$ sudo apt update</div>
+    </div>
+    <div class="cmd-card" data-category="Usuários" data-tags="passwd,password">
+      <div class="cmd-name">passwd</div>
+      <div class="cmd-desc">Altera a senha do usuário atual.</div>
+      <div class="cmd-example">$ passwd</div>
+    </div>
+    <div class="cmd-card" data-category="Usuários" data-tags="useradd,create">
+      <div class="cmd-name">useradd</div>
+      <div class="cmd-desc">Cria um novo usuário no sistema.</div>
+      <div class="cmd-example">$ useradd novo_usuario</div>
+    </div>
   </div>
 </section>
 
