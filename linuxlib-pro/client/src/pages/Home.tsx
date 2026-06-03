@@ -3,6 +3,9 @@ import Header from "@/components/Header";
 import CategoryFilter from "@/components/CategoryFilter";
 import CommandCard from "@/components/CommandCard";
 import { commands } from "@/data/commands";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   const [searchValue, setSearchValue] = useState("");
@@ -37,19 +40,27 @@ export default function Home() {
 
           {/* Main Content */}
           <div className="flex-1 min-w-0">
-            {/* Results Header */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-foreground font-space-grotesk mb-2">
-                {selectedCategory === "all"
-                  ? "Todos os Comandos"
-                  : `Categoria: ${selectedCategory}`}
-              </h2>
-              <p className="text-muted-foreground">
-                {filteredCommands.length} comando
-                {filteredCommands.length !== 1 ? "s" : ""} encontrado
-                {filteredCommands.length !== 1 ? "s" : ""}
-              </p>
-            </div>
+            <Card className="mb-8 border-primary/10 bg-gradient-to-br from-primary/5 to-card">
+              <CardContent className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground font-space-grotesk mb-2">
+                    {selectedCategory === "all"
+                      ? "Todos os Comandos"
+                      : `Categoria: ${selectedCategory}`}
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Explore comandos, exemplos e explicações em um único lugar.
+                  </p>
+                </div>
+
+                <Badge variant="secondary" className="w-fit">
+                  {filteredCommands.length} comando
+                  {filteredCommands.length !== 1 ? "s" : ""}
+                </Badge>
+              </CardContent>
+            </Card>
+
+            <Separator className="mb-8" />
 
             {/* Commands Grid */}
             {filteredCommands.length > 0 ? (
@@ -59,30 +70,32 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                  <svg
-                    className="w-8 h-8 text-muted-foreground"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  Nenhum comando encontrado
-                </h3>
-                <p className="text-muted-foreground max-w-sm">
-                  Tente ajustar sua busca ou explorar outras categorias para
-                  encontrar o comando que você procura.
-                </p>
-              </div>
+              <Card className="border-dashed">
+                <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                    <svg
+                      className="w-8 h-8 text-muted-foreground"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    Nenhum comando encontrado
+                  </h3>
+                  <p className="text-muted-foreground max-w-sm">
+                    Tente ajustar sua busca ou explorar outras categorias para
+                    encontrar o comando que você procura.
+                  </p>
+                </CardContent>
+              </Card>
             )}
           </div>
         </div>

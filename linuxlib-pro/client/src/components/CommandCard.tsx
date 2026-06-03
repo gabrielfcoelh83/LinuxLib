@@ -1,5 +1,21 @@
 import { Command } from "@/data/commands";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Separator } from "@/components/ui/separator";
 import { Copy, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -19,57 +35,63 @@ export default function CommandCard({ command }: CommandCardProps) {
   };
 
   return (
-    <div className="group relative bg-card border border-border rounded-lg p-6 hover:shadow-lg hover:border-primary/50 transition-all duration-300 overflow-hidden">
-      {/* Background accent */}
-      <div className="absolute -right-8 -top-8 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors duration-300" />
-      
-      <div className="relative z-10">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-3">
-          <div>
-            <h3 className="text-xl font-bold text-foreground font-space-grotesk">
-              {command.name}
-            </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              {command.description}
-            </p>
-          </div>
-          <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-            {command.category}
-          </span>
-        </div>
+    <Card className="group relative overflow-hidden border-border/70 transition-all duration-300 hover:border-primary/40 hover:shadow-lg">
+      <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary/5 blur-2xl transition-colors duration-300 group-hover:bg-primary/10" />
 
-        {/* Code Example */}
-        <div className="my-4 bg-slate-900 dark:bg-slate-950 rounded-md p-3 border border-slate-700 dark:border-slate-800">
-          <div className="flex items-center justify-between">
-            <code className="text-sm font-mono text-green-400 break-all">
+      <CardHeader className="relative z-10 space-y-3">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <CardTitle className="font-space-grotesk text-xl">{command.name}</CardTitle>
+            <CardDescription className="mt-1">{command.description}</CardDescription>
+          </div>
+          <Badge variant="secondary" className="shrink-0">
+            {command.category}
+          </Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="relative z-10 space-y-4">
+        <div className="rounded-lg border bg-muted/40 p-4">
+          <div className="flex items-start justify-between gap-3">
+            <code className="min-w-0 flex-1 break-words font-mono text-sm text-emerald-600 dark:text-emerald-400">
               {command.example}
             </code>
             <Button
-              size="sm"
+              size="icon-sm"
               variant="ghost"
               onClick={handleCopy}
-              className="ml-2 flex-shrink-0 hover:bg-primary/20"
+              className="flex-shrink-0"
+              aria-label="Copiar comando"
             >
-              <Copy className={`w-4 h-4 ${isCopied ? "text-primary" : "text-muted-foreground"}`} />
+              <Copy className={`size-4 ${isCopied ? "text-primary" : "text-muted-foreground"}`} />
             </Button>
           </div>
         </div>
 
-        {/* Explanation */}
-        <div className="mb-4">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            <span className="font-semibold text-foreground">O que faz: </span>
-            {command.explanation}
-          </p>
-        </div>
+        <Separator />
 
-        {/* Footer */}
-        <div className="flex items-center text-primary text-sm font-medium group-hover:gap-2 transition-all duration-300">
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="details" className="border-b-0">
+            <AccordionTrigger className="py-2 text-sm hover:no-underline">
+              Ver detalhes
+            </AccordionTrigger>
+            <AccordionContent className="pt-0 pb-0">
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                <span className="font-medium text-foreground">O que faz: </span>
+                {command.explanation}
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </CardContent>
+
+      <CardFooter className="relative z-10 flex items-center justify-between pt-0">
+        <Badge variant="outline">{command.category}</Badge>
+        <span className="flex items-center gap-1 text-sm font-medium text-primary">
           Saiba mais
-          <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" />
-        </div>
-      </div>
-    </div>
+          <ChevronRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+        </span>
+      </CardFooter>
+    </Card>
   );
 }

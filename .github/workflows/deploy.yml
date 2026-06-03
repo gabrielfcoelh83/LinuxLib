@@ -1,41 +1,58 @@
-name: CI/CD Pipeline
+name: Deploy React App to GitHub Pages
 
 on:
   push:
-    branches: ["main", "develop", "feature/*"]
-  pull_request:
-    branches: ["main", "develop"]
+    branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
-  # ETAPA 1: VALIDAÇÃO (Roda em todas as branches)
-  validate:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Validar HTML
-        run: npx html-validate index.html
-        
-      - name: Verificar Links Quebrados
-        uses: lycheeverse/lychee-action@v1.9.0
-        with:
-          args: index.html
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  # ETAPA 2: DEPLOY (Só roda na MAIN ou DEVELOP se a validação passar)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: linuxlib-pro/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: linuxlib-pro
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Vite app
+        working-directory: linuxlib-pro
+        run: pnpm build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: linuxlib-pro/dist/public
+
   deploy:
-    needs: validate
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    needs: build
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-      - uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
