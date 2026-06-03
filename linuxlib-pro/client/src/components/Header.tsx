@@ -7,7 +7,7 @@ import SearchBar from "./SearchBar";
 interface HeaderProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
-  searchRef?: React.RefObject<HTMLInputElement>;
+  searchRef?: React.RefObject<HTMLInputElement | null>;
   onOpenShortcuts?: () => void;
 }
 

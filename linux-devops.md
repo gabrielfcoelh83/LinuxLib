@@ -169,9 +169,9 @@ https://gabrielfcoelh83.github.io/LinuxLib/
 ## Melhorias DevOps identificadas (backlog)
 
 ### Alta prioridade
-- [ ] **Testes no CI**: rodar `pnpm check` (TypeScript) no pipeline antes do build
-- [ ] **Lint no CI**: adicionar ESLint ao pipeline para bloquear código com erros
-- [ ] **`.env.example`**: documentar variáveis esperadas mesmo que vazias hoje
+- [x] **Testes no CI**: rodar `pnpm check` (TypeScript) no pipeline antes do build
+- [x] **Lint no CI**: adicionar ESLint ao pipeline para bloquear código com erros
+- [x] **`.env.example`**: documentar variáveis esperadas mesmo que vazias hoje
 
 ### Média prioridade
 - [ ] **Dockerfile**: containerizar a aplicação para rodar localmente de forma isolada
