@@ -6,20 +6,19 @@ import { useHashLocation } from "wouter/use-hash-location";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-
-
+import Landing from "./pages/Landing";
 
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
+      <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster />
           <Router hook={useHashLocation}>
             <Switch>
-              <Route path="/" component={Home} />
+              <Route path="/" component={Landing} />
+              <Route path="/app" component={Home} />
               <Route path="/404" component={NotFound} />
-              {/* Final fallback route */}
               <Route component={NotFound} />
             </Switch>
           </Router>

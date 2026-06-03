@@ -1,4 +1,5 @@
 import { Terminal } from "lucide-react";
+import { Link } from "wouter";
 import SearchBar from "./SearchBar";
 
 interface HeaderProps {
@@ -8,25 +9,31 @@ interface HeaderProps {
 
 export default function Header({ searchValue, onSearchChange }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 bg-background border-b border-border">
-      <div className="container py-6">
-        <div className="flex flex-col gap-6">
-          {/* Logo and Title */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-lg">
-              <Terminal className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-foreground font-space-grotesk">
-                LinuxLib Pro
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Sua biblioteca definitiva de comandos Linux
-              </p>
-            </div>
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
+      <div className="container py-5">
+        <div className="flex flex-col gap-5">
+          {/* Brand — links back to landing */}
+          <div className="flex items-center justify-between">
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+              aria-label="Voltar para a página inicial do LinuxLib Pro"
+            >
+              <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary">
+                <Terminal className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
+              </span>
+              <div>
+                <p className="font-syne text-2xl font-bold leading-none">
+                  LinuxLib Pro
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Referência de comandos Linux
+                </p>
+              </div>
+            </Link>
           </div>
 
-          {/* Search Bar */}
+          {/* Search */}
           <div className="max-w-2xl">
             <SearchBar
               value={searchValue}

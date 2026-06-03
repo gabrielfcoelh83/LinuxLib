@@ -1,6 +1,6 @@
-import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface SearchBarProps {
   value: string;
@@ -14,27 +14,39 @@ export default function SearchBar({
   placeholder = "Buscar comandos...",
 }: SearchBarProps) {
   return (
-    <div className="relative w-full">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
-        <Search className="w-5 h-5" />
+    <form
+      role="search"
+      aria-label="Buscar comandos Linux"
+      onSubmit={(e) => e.preventDefault()}
+      className="relative w-full"
+    >
+      <label htmlFor="command-search" className="sr-only">
+        Buscar comandos Linux
+      </label>
+      <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+        <Search className="h-5 w-5" aria-hidden="true" />
       </div>
       <Input
-        type="text"
+        id="command-search"
+        type="search"
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="pl-10 pr-10 h-11 bg-card border-border focus:border-primary"
+        className="h-11 pl-10 pr-10 bg-card border-border focus:border-primary"
+        autoComplete="off"
       />
       {value && (
         <Button
+          type="button"
           variant="ghost"
           size="sm"
           onClick={() => onChange("")}
-          className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
+          aria-label="Limpar busca"
+          className="absolute right-2 top-1/2 h-7 w-7 -translate-y-1/2 p-0"
         >
-          <X className="w-4 h-4" />
+          <X className="h-4 w-4" aria-hidden="true" />
         </Button>
       )}
-    </div>
+    </form>
   );
 }
